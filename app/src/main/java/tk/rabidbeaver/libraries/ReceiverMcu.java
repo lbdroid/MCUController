@@ -186,6 +186,14 @@ public class ReceiverMcu {
         if (!DataMain.sMcuActived) {
             DataMain.sMcuActived = true;
         }
+        String inCommand = "0x";
+        String hexStr = "";
+        for (int ii = start; ii<start+length; ii++){
+            hexStr = Integer.toHexString(data[ii]);
+            while (hexStr.length() < 2) hexStr = "0"+hexStr;
+            inCommand += hexStr;
+        }
+        Log.d("MCUSERIAL", "COMMAND _IN: "+inCommand);
         int[] postData;
         int i;
         int j;
@@ -816,9 +824,8 @@ public class ReceiverMcu {
                     default:
                         return;
                 }*/
-            default:
-                return;
         }
+        Log.d("MCUSERIAL", "COMMAND NOT HANDLED: "+inCommand);
     }
 
     private void onHandleMain(byte[] data, int start, int length) {
@@ -991,10 +998,10 @@ public class ReceiverMcu {
                     case (byte) 17:
                         return;
                     case (byte) 18:
-                        HandlerMain.lamplet(0);
+                        HandlerMain.lamplet(0); // headlights off?
                         return;
                     case (byte) 19:
-                        HandlerMain.lamplet(1);
+                        HandlerMain.lamplet(1); // headlights on?
                         return;
                     case (byte) 32:
                         return;
@@ -1269,10 +1276,10 @@ public class ReceiverMcu {
             case (byte) 35:
                 switch (data[start + 1]) {
                     case (byte) 2:
-                        HandlerMain.carBackcar(0);
+                        HandlerMain.carBackcar(0); // reverse off?
                         return;
                     case (byte) 3:
-                        HandlerMain.carBackcar(1);
+                        HandlerMain.carBackcar(1); // reverse on?
                         return;
                     default:
                         return;

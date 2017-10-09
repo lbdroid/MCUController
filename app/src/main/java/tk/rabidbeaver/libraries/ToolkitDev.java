@@ -1,6 +1,7 @@
 package tk.rabidbeaver.libraries;
 
 import android.os.Handler;
+import android.util.Log;
 
 public class ToolkitDev {
 
@@ -32,6 +33,14 @@ public class ToolkitDev {
 
     public static void writeMcu(int... args) {
         if (sMcuActived) {
+            String inCommand = "0x";
+            String hexStr = "";
+            for (int ii = 0; ii<args.length; ii++) {
+                hexStr = Integer.toHexString(args[ii]);
+                while (hexStr.length() < 2) hexStr = "0"+hexStr;
+                inCommand += hexStr;
+            }
+            Log.d("MCUSERIAL", "COMMAND OUT: "+inCommand);
             byte[] data = packFrameMcu(args);
             if (data == null) {
                 return;
