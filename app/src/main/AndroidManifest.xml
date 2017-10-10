@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="tk.rabidbeaver.mcucontroller">
 
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +18,24 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <receiver android:name=".BootReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".RadioReceiver" >
+            <intent-filter>
+                <action android:name="tk.rabidbeaver.radiocontroller.POWER_ON"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.POWER_OFF"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.SEEK_UP"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.SEEK_DOWN"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.TUNE_UP"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.TUNE_DOWN"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.TUNE"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.BAND"/>
+            </intent-filter>
+        </receiver>
+        <service android:name=".MCUService" />
     </application>
 
 </manifest>

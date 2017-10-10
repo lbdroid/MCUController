@@ -2,19 +2,19 @@ package tk.rabidbeaver.libraries;
 
 public class CmdRadio {
 
-    public void freqUp() {
+    public static void freqUp() {
         ToolkitDev.writeMcu(1, 3, 17);
     }
 
-    public void freqDown() {
+    public static void freqDown() {
         ToolkitDev.writeMcu(1, 3, 16);
     }
 
-    public void seekUp() {
+    public static void seekUp() {
         ToolkitDev.writeMcu(1, 3, 6);
     }
 
-    public void seekDown() {
+    public static void seekDown() {
         ToolkitDev.writeMcu(1, 3, 5);
     }
 
@@ -51,9 +51,13 @@ public class CmdRadio {
         ToolkitDev.writeMcu(1, 3, 18);
     }
 
-    public void band(int value) {
+    public static void band(int value) {
+        // Band -1 doesn't seem to do anything.
+        // Band -3 is FM, and rotates through 3 "sets".
+        // Band -2 is AM, and rotates through 2 "sets".
+        // Sending 0 for AM or 65536 for FM is preferable.
         switch (value) {
-            case -3:
+            case -3: // FM
                 value = HandlerRadio.sBand + 1;
                 if (value < 65536 || value >= 65539) {
                     band(65536);
@@ -62,7 +66,7 @@ public class CmdRadio {
                     band(value);
                     return;
                 }
-            case -2:
+            case -2: // AM
                 if (HandlerRadio.sBand != 0) {
                     band(0);
                     return;
@@ -70,7 +74,7 @@ public class CmdRadio {
                     band(1);
                     return;
                 }
-            case -1:
+            case -1: // ?
                 ToolkitDev.writeMcu(1, 3, 24);
                 return;
             default:
@@ -88,7 +92,9 @@ public class CmdRadio {
         }
     }
 
-    public void freq(int value1, int value2) {
+    public static void freq(int value1, int value2) {
+        // value 1 should only be 0 or 3. The other two are bogus.
+        // To tune to FM station, use value1=3, value3 = MHz*100, so for instance, 93.1 becomes 9310
         switch (value1) {
             case 0:
                 if (value2 >= 0 && value2 <= HandlerRadio.sFreqStepCnt) {
@@ -245,7 +251,7 @@ public class CmdRadio {
         }
     }
 
-    public void powerOn(int value) {
+    public static void powerOn(int value) {
         switch (value) {
             case 0:
                 ToolkitDev.writeMcu(1, 0, 187);

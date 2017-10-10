@@ -182,6 +182,10 @@ public class ReceiverMcu {
         }
     }
 
+    public static int makeInt(byte high, byte mid, byte low) {
+        return (((high << 16) & 16711680) | ((mid << 8) & 65280)) | (low & 255);
+    }
+
     private void onHandle(byte[] data, int start, int length) {
         if (!DataMain.sMcuActived) {
             DataMain.sMcuActived = true;
@@ -613,29 +617,29 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) 33:
-                /*TODO int band = data[start + 1] & 255;
+                int band = data[start + 1] & 255;
                 int step = data[start + 2] & 255;
-                int freqMin = ToolkitMisc.makeInt(data[start + 3], data[start + 4], data[start + 5]);
-                int freqMax = ToolkitMisc.makeInt(data[start + 6], data[start + 7], data[start + 8]);
+                int freqMin = makeInt(data[start + 3], data[start + 4], data[start + 5]);
+                int freqMax = makeInt(data[start + 6], data[start + 7], data[start + 8]);
                 if (band <= 2) {
                     step /= 10;
                     freqMin /= 10;
                     freqMax /= 10;
                 }
                 int stepCnt = (freqMax - freqMin) / step;
-                if (DataRadio.sExtraInfoByMcu != 0) {
+                if (HandlerRadio.sExtraInfoByMcu != 0) {
                     int[] value2 = new int[4];
                     value2[0] = freqMin;
-                    DataRadio.sFreqMin = freqMin;
+                    HandlerRadio.sFreqMin = freqMin;
                     value2[1] = freqMax;
-                    DataRadio.sFreqMax = freqMax;
+                    HandlerRadio.sFreqMax = freqMax;
                     value2[2] = step;
-                    DataRadio.sFreqStepLen = step;
+                    HandlerRadio.sFreqStepLen = step;
                     value2[3] = stepCnt;
-                    DataRadio.sFreqStepCnt = stepCnt;
-                    ModuleCallbackList.update(DataRadio.MCLS, 16, value2);
+                    HandlerRadio.sFreqStepCnt = stepCnt;
+                    //ModuleCallbackList.update(DataRadio.MCLS, 16, value2);
                     return;
-                }*/
+                }
                 return;
             case (byte) 65:
                 /*index = data[start + 1] & 255;

@@ -1,21 +1,28 @@
 package tk.rabidbeaver.libraries;
 
+import android.util.Log;
+
 public class HandlerRadio {
     public static int sBand = 65536;
     public static int sFreqMax;
     public static int sFreqMin;
-    public static int sFreqStepCnt;
+    public static int sFreqStepCnt=150;
     public static int sAutoSensity;
     public static int sRdsEnable;
     public static int sSortType;
     public static int sAirLine;
     public static int sPowerOn;
 
+    public static int sArea;
+    public static int sExtraInfoByMcu;
+    public static int sFreqStepLen;
+
     /*public int getRadioType() {
         return SystemProperties.getInt("sys.fyt.radio_type", 1);
     }*/
 
     public static void band(int value) {
+        Log.d("RADIO", "band: "+value);
         if (sBand != value) {
             sBand = value;
             /*ModuleCallbackList.update(DataRadio.MCLS, 0, value);
@@ -34,6 +41,7 @@ public class HandlerRadio {
     }
 
     public static void area(int value) {
+        Log.d("RADIO", "area: "+value);
         /*if (DataRadio.sArea != value) {
             DataRadio.sArea = value;
             ModuleCallbackList.update(DataRadio.MCLS, 2, value);
@@ -44,6 +52,7 @@ public class HandlerRadio {
     }
 
     public static void freq(int value) {
+        Log.d("RADIO", "freq: "+value);
         /*if (DataRadio.sFreq != value) {
             psText(null);
             DataRadio.sFreq = value;
@@ -53,6 +62,7 @@ public class HandlerRadio {
     }
 
     public static void ptyId(int value) {
+        Log.d("RADIO", "ptyId: "+value);
         /*if (DataRadio.sPtyId != value) {
             DataRadio.sPtyId = value;
             ModuleCallbackList.update(DataRadio.MCLS, 5, value);
@@ -60,6 +70,7 @@ public class HandlerRadio {
     }
 
     public static void rdsAfEnable(int value) {
+        Log.d("RADIO", "rdsAfEnable: "+value);
         /*if (DataRadio.sRdsAfEnable != value) {
             DataRadio.sRdsAfEnable = value;
             ModuleCallbackList.update(DataRadio.MCLS, 6, value);
@@ -67,6 +78,7 @@ public class HandlerRadio {
     }
 
     public static void rdsTa(int value) {
+        Log.d("RADIO", "rdsTa: "+value);
         /*if (DataRadio.sRdsTa != value) {
             DataRadio.sRdsTa = value;
             ModuleCallbackList.update(DataRadio.MCLS, 7, value);
@@ -74,6 +86,7 @@ public class HandlerRadio {
     }
 
     public static void rdsTp(int value) {
+        Log.d("RADIO", "rdsTp: "+value);
         /*if (DataRadio.sRdsTp != value) {
             DataRadio.sRdsTp = value;
             ModuleCallbackList.update(DataRadio.MCLS, 8, value);
@@ -81,6 +94,7 @@ public class HandlerRadio {
     }
 
     public static void rdsTaEnable(int value) {
+        Log.d("RADIO", "rdsTaEnable: "+value);
         /*if (DataRadio.sRdsTaEnable != value) {
             DataRadio.sRdsTaEnable = value;
             ModuleCallbackList.update(DataRadio.MCLS, 9, value);
@@ -95,6 +109,7 @@ public class HandlerRadio {
     }
 
     public static void rdsPiSeek(int value) {
+        Log.d("RADIO", "rdsPiSeek: "+value);
         /*if (DataRadio.sRdsPiSeek != value) {
             DataRadio.sRdsPiSeek = value;
             ModuleCallbackList.update(DataRadio.MCLS, 10, value);
@@ -102,6 +117,7 @@ public class HandlerRadio {
     }
 
     public static void rdsTaSeek(int value) {
+        Log.d("RADIO", "rdsTaSeek: "+value);
         /*if (DataRadio.sRdsTaSeek != value) {
             DataRadio.sRdsTaSeek = value;
             ModuleCallbackList.update(DataRadio.MCLS, 11, value);
@@ -109,6 +125,7 @@ public class HandlerRadio {
     }
 
     public static void rdsPtySeek(int value) {
+        Log.d("RADIO", "rdsPtySeek: "+value);
         /*if (DataRadio.sRdsPtySeek != value) {
             DataRadio.sRdsPtySeek = value;
             ModuleCallbackList.update(DataRadio.MCLS, 12, value);
@@ -116,6 +133,7 @@ public class HandlerRadio {
     }
 
     public static void rdsText(String value) {
+        Log.d("RADIO", "rdsText: "+value);
         /*if (!ToolkitMisc.strEqual(DataRadio.sRdsText, value)) {
             DataRadio.sRdsText = value;
             ModuleCallbackList.update(DataRadio.MCLS, 13, value);
@@ -123,6 +141,7 @@ public class HandlerRadio {
     }
 
     public static void psText(String value) {
+        Log.d("RADIO", "psText: "+value);
         /*if (!ToolkitMisc.strEqual(DataRadio.sPsText, value)) {
             DataRadio.sPsText = value;
             ModuleCallbackList.update(DataRadio.MCLS, 26, value);
@@ -130,6 +149,7 @@ public class HandlerRadio {
     }
 
     public static void rdsEnable(int value) {
+        Log.d("RADIO", "rdsEnable: "+value);
         /*if (DataRadio.sRdsEnable != value) {
             DataRadio.sRdsEnable = value;
             ModuleCallbackList.update(DataRadio.MCLS, 15, value);
@@ -137,6 +157,7 @@ public class HandlerRadio {
     }
 
     public static void sensityAm(int value) {
+        Log.d("RADIO", "sensitivityAm: "+value);
         /*if (DataRadio.sSensityAm != value) {
             DataRadio.sSensityAm = value;
             ModuleCallbackList.update(DataRadio.MCLS, 17, value);
@@ -144,6 +165,7 @@ public class HandlerRadio {
     }
 
     public static void sensityFm(int value) {
+        Log.d("RADIO", "sensitivityFm: "+value);
         /*if (DataRadio.sSensityFm != value) {
             DataRadio.sSensityFm = value;
             ModuleCallbackList.update(DataRadio.MCLS, 18, value);
@@ -151,6 +173,7 @@ public class HandlerRadio {
     }
 
     public static void autoSensity(int value) {
+        Log.d("RADIO", "autoSensitivity: "+value);
         /*if (DataRadio.sAutoSensity != value) {
             DataRadio.sAutoSensity = value;
             ModuleCallbackList.update(DataRadio.MCLS, 19, value);
@@ -158,6 +181,7 @@ public class HandlerRadio {
     }
 
     public static void scan(int value) {
+        Log.d("RADIO", "scan: "+value);
         /*if (DataRadio.sScan != value) {
             DataRadio.sScan = value;
             ModuleCallbackList.update(DataRadio.MCLS, 20, value);
@@ -165,6 +189,7 @@ public class HandlerRadio {
     }
 
     public static void loc(int value) {
+        Log.d("RADIO", "loc: "+value);
         /*if (DataRadio.sLoc != value) {
             DataRadio.sLoc = value;
             ModuleCallbackList.update(DataRadio.MCLS, 23, value);
@@ -172,6 +197,7 @@ public class HandlerRadio {
     }
 
     public static void stereo(int value) {
+        Log.d("RADIO", "stereo: "+value);
         /*if (DataRadio.sStereo != value) {
             DataRadio.sStereo = value;
             ModuleCallbackList.update(DataRadio.MCLS, 21, value);
@@ -179,6 +205,7 @@ public class HandlerRadio {
     }
 
     public static void searchState(int value) {
+        Log.d("RADIO", "searchState: "+value);
         /*if (DataRadio.sSearchState != value) {
             DataRadio.sSearchState = value;
             ModuleCallbackList.update(DataRadio.MCLS, 22, value);
@@ -186,6 +213,7 @@ public class HandlerRadio {
     }
 
     public static void sortType(int value) {
+        Log.d("RADIO", "sortType: "+value);
         /*if (DataRadio.sSortType != value) {
             DataRadio.sSortType = value;
             ModuleCallbackList.update(DataRadio.MCLS, 24, value);
@@ -193,6 +221,7 @@ public class HandlerRadio {
     }
 
     public static void power(int value) {
+        Log.d("RADIO", "power: "+value);
         /*if (DataRadio.sPowerOn != value) {
             DataRadio.sPowerOn = value;
             ModuleCallbackList.update(DataRadio.MCLS, 27, value);
@@ -200,9 +229,9 @@ public class HandlerRadio {
     }
 
     public static void extraFreqInfo() {
-        /*if (DataRadio.sExtraInfoByMcu == 0) {
+        if (sExtraInfoByMcu == 0) {
             int[] value = new int[4];
-            switch ((DataRadio.sArea << 20) | DataRadio.sBand) {
+            switch ((sArea << 20) | sBand) {
                 case 0:
                 case 1:
                     value[0] = 530;
@@ -268,13 +297,14 @@ public class HandlerRadio {
             if (value[2] != 0) {
                 value[3] = (value[1] - value[0]) / value[2];
             }
-            ModuleCallbackList.update(DataRadio.MCLS, 16, value);
-        } else if (DataRadio.sFreqMin != 0) {
-            ModuleCallbackList.update(DataRadio.MCLS, 16, new int[]{DataRadio.sFreqMin, DataRadio.sFreqMax, DataRadio.sFreqStepLen, DataRadio.sFreqStepCnt});
-        }*/
+            //ModuleCallbackList.update(DataRadio.MCLS, 16, value);
+        }// else if (DataRadio.sFreqMin != 0) {
+         //   ModuleCallbackList.update(DataRadio.MCLS, 16, new int[]{DataRadio.sFreqMin, DataRadio.sFreqMax, DataRadio.sFreqStepLen, DataRadio.sFreqStepCnt});
+        //}
     }
 
     public static void airLine(int value) {
+        Log.d("RADIO", "airLine: "+value);
         /*if (DataRadio.sAirLine != value) {
             DataRadio.sAirLine = value;
             ModuleCallbackList.update(DataRadio.MCLS, 25, value);
