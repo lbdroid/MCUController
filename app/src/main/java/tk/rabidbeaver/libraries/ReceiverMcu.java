@@ -223,25 +223,7 @@ public class ReceiverMcu {
                 }*/
                 return;
             case (byte) -76: // 180 / 0xB4
-                /* USELESS Gsensor
-                switch (data[start + 1] & 255) {
-                    case 1:
-                        HandlerGSensor.existGSensor(data[start + 2] & 255);
-                        return;
-                    case 2:
-                        value = data[start + 2] & 255;
-                        if (value == 0) {
-                            HandlerGSensor.lockRecord(1);
-                            return;
-                        } else if (value == 1) {
-                            HandlerGSensor.sleepStopRecord(1);
-                            return;
-                        } else {
-                            return;
-                        }
-                    default:
-                        return;
-                }*/
+                Log.d("MCU", "GSENSOR: ignore");
                 return;
             case (byte) -64: // 192 / 0xC0
                 HandlerSteer.mcuKeyEnable(data[start + 1] & 1);
@@ -340,6 +322,7 @@ public class ReceiverMcu {
                         //DataDvd.sCmd.cmdFromMcu(data, start + 2, length - 2);
                         return;
                     case (byte) -45:
+                        Log.d("RADIO", "B-45");
                         byte B0 = data[start + 2];
                         byte B1 = data[start + 3];
                         index = (((B0 & 128) >> 6) | ((B1 & 128) >> 7)) << 1;
@@ -427,14 +410,17 @@ public class ReceiverMcu {
                     case (byte) 56:
                         switch (data[start + 2]) {
                             case (byte) 32:
+                                Log.d("MCU", "mediaPlayPause");
                                 //TODO ToolkitApp.mediaPlayPause(DataMain.sAppId);
                                 return;
                             case (byte) 48:
                                 switch (data[start + 3]) {
                                     case (byte) 0:
+                                        Log.d("MCU", "mediaPrev");
                                         //TODO ToolkitApp.mediaPrev(DataMain.sAppId);
                                         return;
                                     case (byte) 1:
+                                        Log.d("MCU", "mediaNext");
                                         //TODO ToolkitApp.mediaNext(DataMain.sAppId);
                                         return;
                                     default:
@@ -443,6 +429,7 @@ public class ReceiverMcu {
                             case (byte) 64:
                                 int num = data[start + 3] & 255;
                                 if (num <= 9) {
+                                    Log.d("MCU", "mediaKeyNum: "+num);
                                     //TODO ToolkitApp.mediaKeyNum(DataMain.sAppId, num);
                                 }
                                 switch (num) {
@@ -465,6 +452,7 @@ public class ReceiverMcu {
                                     case (byte) 7:
                                     case (byte) 8:
                                     case (byte) 9:
+                                        Log.d("MCU", "mediaKeyNum: "+data[start+3]);
                                         //TODO ToolkitApp.mediaKeyNum(DataMain.sAppId, data[start + 3] & 255);
                                         return;
                                     case (byte) 10:
@@ -473,21 +461,27 @@ public class ReceiverMcu {
                                     case (byte) 13:
                                         return;
                                     case (byte) 16:
+                                        Log.d("MCU", "mediaPlayPause");
                                         //TODO ToolkitApp.mediaPlayPause(DataMain.sAppId);
                                         return;
                                     case (byte) 17:
+                                        Log.d("MCU", "mediaStop");
                                         //TODO ToolkitApp.mediaStop(DataMain.sAppId);
                                         return;
                                     case (byte) 18:
+                                        Log.d("MCU", "mediaPrev");
                                         //TODO ToolkitApp.mediaPrev(DataMain.sAppId);
                                         return;
                                     case (byte) 19:
+                                        Log.d("MCU", "mediaNext");
                                         //TODO ToolkitApp.mediaNext(DataMain.sAppId);
                                         return;
                                     case (byte) 20:
+                                        Log.d("MCU", "mediaFB");
                                         //TODO ToolkitApp.mediaFB(DataMain.sAppId);
                                         return;
                                     case (byte) 21:
+                                        Log.d("MCU", "mediaFF");
                                         //TODO ToolkitApp.mediaFF(DataMain.sAppId);
                                         return;
                                     default:
@@ -617,6 +611,7 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) 33:
+                Log.d("RADIO", "B33");
                 int band = data[start + 1] & 255;
                 int step = data[start + 2] & 255;
                 int freqMin = makeInt(data[start + 3], data[start + 4], data[start + 5]);
@@ -660,7 +655,8 @@ public class ReceiverMcu {
                 //HandlerTv.area(data[start + 1] & 255);
                 return;
             case (byte) 80:
-                int channel = data[start + 1] - 1;
+                Log.d("RADIO", "RDS Channel Text -- skip");
+                /*TODO int channel = data[start + 1] - 1;
                 if (channel >= 0 && channel < 30) {
                     stringBuilder = new StringBuilder(32);
                     i = start + 2;
@@ -670,22 +666,22 @@ public class ReceiverMcu {
                         i++;
                     }
                     String value3 = stringBuilder.toString();
-                    /*TODO if (channel >= 18) {
+                    if (channel >= 18) {
                         channel -= 18;
-                        if (!ToolkitMisc.strEqual(DataRadio.RDS_CHANNEL_TEXT_AM[channel], value3)) {
-                            DataRadio.RDS_CHANNEL_TEXT_AM[channel] = value3;
-                            ModuleCallbackList.update(DataRadio.MCLS, 14, channel + 0, value3);
+                        if (HandlerRadio.RDS_CHANNEL_TEXT_AM[channel] == null || !value3.contentEquals(HandlerRadio.RDS_CHANNEL_TEXT_AM[channel])){
+                            HandlerRadio.RDS_CHANNEL_TEXT_AM[channel] = value3;
+                            //ModuleCallbackList.update(DataRadio.MCLS, 14, channel + 0, value3);
                             return;
                         }
                         return;
-                    } else if (!ToolkitMisc.strEqual(DataRadio.RDS_CHANNEL_TEXT_FM[channel], value3)) {
-                        DataRadio.RDS_CHANNEL_TEXT_FM[channel] = value3;
-                        ModuleCallbackList.update(DataRadio.MCLS, 14, 65536 + channel, value3);
+                    } else if (HandlerRadio.RDS_CHANNEL_TEXT_FM[channel] == null || !value3.contentEquals(HandlerRadio.RDS_CHANNEL_TEXT_FM[channel])) {
+                        HandlerRadio.RDS_CHANNEL_TEXT_FM[channel] = value3;
+                        //ModuleCallbackList.update(DataRadio.MCLS, 14, 65536 + channel, value3);
                         return;
                     } else {
                         return;
-                    }*/
-                }
+                    }
+                }*/
                 return;
             case (byte) 81:
                 stringBuilder = new StringBuilder(length);
@@ -789,45 +785,6 @@ public class ReceiverMcu {
                     default:
                         return;
                 }
-            case (byte) 124:
-                HandlerMain.fanCycle(data[start + 1] & 255);
-                return;
-            case (byte) 126:
-                /*switch (data[start + 1]) {
-                    case (byte) 0:
-                        switch (data[start + 2]) {
-                            case (byte) 0:
-                                HandlerGSensor.altitude(data[start + 3] & 255, data[start + 4] & 255, data[start + 5] & 255);
-                                return;
-                            case (byte) 1:
-                                HandlerGSensor.height(data[start + 3] & 255, data[start + 4] & 255, data[start + 5] & 255);
-                                return;
-                            case (byte) 2:
-                                HandlerGSensor.temperature(data[start + 3] & 255, data[start + 4] & 255, data[start + 5] & 255);
-                                return;
-                            default:
-                                return;
-                        }
-                    case (byte) 1:
-                        switch (data[start + 2]) {
-                            case (byte) 0:
-                                HandlerGSensor.compassX(data[start + 3] & 255, data[start + 4] & 255);
-                                return;
-                            case (byte) 1:
-                                HandlerGSensor.compassY(data[start + 3] & 255, data[start + 4] & 255);
-                                return;
-                            case (byte) 2:
-                                HandlerGSensor.compassZ(data[start + 3] & 255, data[start + 4] & 255);
-                                return;
-                            case (byte) 3:
-                                HandlerGSensor.compassAngle(data[start + 3] & 255, data[start + 4] & 255);
-                                return;
-                            default:
-                                return;
-                        }
-                    default:
-                        return;
-                }*/
         }
         Log.d("MCUSERIAL", "COMMAND NOT HANDLED: "+inCommand);
     }
@@ -1145,10 +1102,10 @@ public class ReceiverMcu {
             case (byte) 13:
                 switch (data[start + 1]) {
                     case (byte) 1:
-                        //TODO DataRadio.sCmd.band(-3);
+                        CmdRadio.band(-3);
                         return;
                     case (byte) 2:
-                        //TODO DataRadio.sCmd.band(-2);
+                        CmdRadio.band(-2);
                         return;
                     default:
                         return;
@@ -1350,113 +1307,119 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) -126:
+                Log.d("MCU", "unknown band/channel");
                 switch (data[start + 1]) {
                     case (byte) -95:
-                        //TODO DataRadio.sCmd.band(-2);
+                        CmdRadio.band(-2);
                         return;
                     case (byte) -79:
-                        //TODO DataRadio.sCmd.band(-3);
+                        CmdRadio.band(-3);
                         return;
                     case (byte) -77:
                     case (byte) 122:
-                        //TODO DataRadio.sCmd.band(-1);
+                        CmdRadio.band(-1);
                         return;
                     case (byte) 1:
                         return;
                     case (byte) 2:
-                        //TODO DataRadio.sCmd.selectChannel(0);
+                        CmdRadio.selectChannel(0);
                         return;
                     case (byte) 3:
-                        //TODO DataRadio.sCmd.selectChannel(1);
+                        CmdRadio.selectChannel(1);
                         return;
                     case (byte) 4:
-                        //TODO DataRadio.sCmd.selectChannel(2);
+                        CmdRadio.selectChannel(2);
                         return;
                     case (byte) 5:
-                        //TODO DataRadio.sCmd.selectChannel(3);
+                        CmdRadio.selectChannel(3);
                         return;
                     case (byte) 6:
-                        //TODO DataRadio.sCmd.selectChannel(4);
+                        CmdRadio.selectChannel(4);
                         return;
                     case (byte) 7:
-                        //TODO DataRadio.sCmd.selectChannel(5);
+                        CmdRadio.selectChannel(5);
                         return;
                     case (byte) 35:
-                        //TODO DataRadio.sCmd.search(2);
+                        CmdRadio.search(2);
                         return;
                     case (byte) 48:
-                        //TODO DataRadio.sCmd.freqDown();
+                        CmdRadio.freqDown();
                         return;
                     case (byte) 49:
-                        //TODO DataRadio.sCmd.freqUp();
+                        CmdRadio.freqUp();
                         return;
                     case (byte) 50:
-                        //TODO DataRadio.sCmd.prevChannel();
+                        CmdRadio.prevChannel();
                         return;
                     case (byte) 51:
-                        //TODO DataRadio.sCmd.nextChannel();
+                        CmdRadio.nextChannel();
                         return;
                     case (byte) 52:
-                        //TODO DataRadio.sCmd.stereo(2);
+                        CmdRadio.stereo();
                         return;
                     case (byte) 54:
-                        //TODO DataRadio.sCmd.save();
+                        CmdRadio.save();
                         return;
                     case (byte) 55:
-                        //TODO DataRadio.sCmd.loc(2);
+                        CmdRadio.loc();
                         return;
                     case (byte) 65:
-                        //TODO DataRadio.sCmd.seekDown();
+                        CmdRadio.seekDown();
                         return;
                     case (byte) 66:
-                        //TODO DataRadio.sCmd.seekUp();
+                        CmdRadio.seekUp();
                         return;
                     default:
                         return;
                 }
             case (byte) 0:
-                int channel = (data[start + 1] & 255) - 1;
+                Log.d("MCU", "freq");
+                /*int channel = (data[start + 1] & 255) - 1;
                 if (channel < 0) {
                     return;
                 }
-                /*TODO if (DataRadio.sBand >= 0 && DataRadio.sBand < 65536) {
+                if (HandlerRadio.sBand >= 0 && HandlerRadio.sBand < 65536) {
                     HandlerRadio.channel(channel + 0);
                     return;
-                } else if (DataRadio.sBand >= 65536 && DataRadio.sBand < 131072) {
+                } else if (HandlerRadio.sBand >= 65536 && HandlerRadio.sBand < 131072) {
                     HandlerRadio.channel(channel + 65536);
                     return;
                 } else {
                     return;
                 }*/return;
             case (byte) 1:
+                Log.d("MCU", "freq 1");
                 this.RADIO_freq = (data[start + 1] & 255) * 10000;
                 return;
             case (byte) 2:
+                Log.d("MCU", "freq 2");
                 this.RADIO_freq += (data[start + 1] & 255) * 100;
                 return;
             case (byte) 3:
-                this.RADIO_freq += data[start + 1] & 255;
+                Log.d("MCU", "freq 3");
+                /*TODO this.RADIO_freq += data[start + 1] & 255;
                 if (this.RADIO_freq > 100000) {
                     this.RADIO_freq -= 100000;
-                    /* TODO if (this.RADIO_channel >= 1 && this.RADIO_channel <= 18) {
+                    if (this.RADIO_channel >= 1 && this.RADIO_channel <= 18) {
                         this.RADIO_channel--;
-                        if (this.RADIO_channel < 18 && DataRadio.FREQ_FM[this.RADIO_channel] != this.RADIO_freq) {
-                            DataRadio.FREQ_FM[this.RADIO_channel] = this.RADIO_freq;
-                            ModuleCallbackList.update(DataRadio.MCLS, 4, this.RADIO_channel + 65536, this.RADIO_freq);
+                        if (this.RADIO_channel < 18 && HandlerRadio.FREQ_FM[this.RADIO_channel] != this.RADIO_freq) {
+                            HandlerRadio.FREQ_FM[this.RADIO_channel] = this.RADIO_freq;
+                            //ModuleCallbackList.update(DataRadio.MCLS, 4, this.RADIO_channel + 65536, this.RADIO_freq);
                         }
                     } else if (this.RADIO_channel >= 101 && this.RADIO_channel <= 112) {
                         this.RADIO_channel -= 101;
-                        if (this.RADIO_channel < 12 && DataRadio.FREQ_AM[this.RADIO_channel] != this.RADIO_freq) {
-                            DataRadio.FREQ_AM[this.RADIO_channel] = this.RADIO_freq;
-                            ModuleCallbackList.update(DataRadio.MCLS, 4, this.RADIO_channel + 0, this.RADIO_freq);
+                        if (this.RADIO_channel < 12 && HandlerRadio.FREQ_AM[this.RADIO_channel] != this.RADIO_freq) {
+                            HandlerRadio.FREQ_AM[this.RADIO_channel] = this.RADIO_freq;
+                            //ModuleCallbackList.update(DataRadio.MCLS, 4, this.RADIO_channel + 0, this.RADIO_freq);
                         }
                     }
-                    EventRadio.NE_RADIO_LIST.onNotify();*/
+                    //EventRadio.NE_RADIO_LIST.onNotify();
                     return;
-                }
+                }*/
                 HandlerRadio.freq(this.RADIO_freq);
                 return;
             case (byte) 5:
+                Log.d("MCU", "B5");
                 switch (data[start + 1]) {
                     case (byte) 0:
                         HandlerRadio.searchState(0);
@@ -1482,6 +1445,7 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) 6:
+                Log.d("MCU", "B6");
                 int band = data[start + 1] & 255;
                 if (band >= 10) {
                     band = (band - 10) + 0;
@@ -1493,16 +1457,16 @@ public class ReceiverMcu {
                     this.RADIO_band = band;
                     int i2 = 0;
                     while (i2 < 12) {
-                        /*TODO if (DataRadio.FREQ_AM[i2] < 500 || DataRadio.FREQ_AM[i2] > 1800) {
+                        if (HandlerRadio.FREQ_AM[i2] < 500 || HandlerRadio.FREQ_AM[i2] > 1800) {
                             ToolkitDev.writeMcu(1, 35, i2 + 101);
-                        }*/
+                        }
                         i2++;
                     }
                     i2 = 0;
                     while (i2 < 18) {
-                        /*TODO if (DataRadio.FREQ_FM[i2] < 6500 || DataRadio.FREQ_FM[i2] > 10800) {
+                        if (HandlerRadio.FREQ_FM[i2] < 6500 || HandlerRadio.FREQ_FM[i2] > 10800) {
                             ToolkitDev.writeMcu(1, 35, i2 + 1);
-                        }*/
+                        }
                         i2++;
                     }
                     ToolkitDev.writeMcu(1, 3, 19);
@@ -1510,6 +1474,7 @@ public class ReceiverMcu {
                 }
                 return;
             case (byte) 7:
+                Log.d("MCU", "B7");
                 HandlerRadio.loc(data[start + 1] & 1);
                 return;
             case (byte) 8:
@@ -1547,9 +1512,6 @@ public class ReceiverMcu {
                 return;
             case (byte) 48:
                 HandlerRadio.area((data[start + 1] & 255) - 1);
-                return;
-            default:
-                return;
         }
     }
 

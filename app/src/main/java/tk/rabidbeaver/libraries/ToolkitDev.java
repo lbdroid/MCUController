@@ -71,9 +71,6 @@ public class ToolkitDev {
         SERIAL_MCU.open(path);
         SERIAL_MCU.setup(baud);
         SERIAL_THREAD_MCU.setName(String.format("MCU DEV PATH = %s FD = %d BAUD = %d", new Object[]{path, Integer.valueOf(SERIAL_MCU.getFd()), Integer.valueOf(baud)}));
-        //HandlerMain.moduleId(1);
-        //HandlerRadio.moduleId(1);
-        //HandlerSteer.moduleId(1);
         RECEIVER_MCU = new ReceiverMcu();
         SERIAL_THREAD_MCU.set(SERIAL_MCU, RECEIVER_MCU);
 

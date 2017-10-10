@@ -33,6 +33,12 @@
                 <action android:name="tk.rabidbeaver.radiocontroller.TUNE_DOWN"/>
                 <action android:name="tk.rabidbeaver.radiocontroller.TUNE"/>
                 <action android:name="tk.rabidbeaver.radiocontroller.BAND"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.RDS_ON"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.AREA"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.AUTOSENS_ON"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.AUTOSENS_OFF"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.STEREO"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.LOC"/>
             </intent-filter>
         </receiver>
         <service android:name=".MCUService" />

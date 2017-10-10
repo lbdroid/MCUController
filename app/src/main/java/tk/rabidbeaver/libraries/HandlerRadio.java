@@ -17,6 +17,12 @@ public class HandlerRadio {
     public static int sExtraInfoByMcu;
     public static int sFreqStepLen;
 
+    public static final int[] FREQ_AM = new int[12];
+    public static final int[] FREQ_FM = new int[18];
+
+    public static final String[] RDS_CHANNEL_TEXT_AM = new String[12];
+    public static final String[] RDS_CHANNEL_TEXT_FM = new String[18];
+
     /*public int getRadioType() {
         return SystemProperties.getInt("sys.fyt.radio_type", 1);
     }*/
@@ -105,7 +111,7 @@ public class HandlerRadio {
         /*if (DataRadio.sRdsTa == 1 && DataRadio.sRdsTp == 1 && DataRadio.sRdsTaEnable == 1) {
             return 1;
         }*/
-        return 0;
+        return 1;
     }
 
     public static void rdsPiSeek(int value) {

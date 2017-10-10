@@ -36,6 +36,30 @@ public class RadioReceiver extends BroadcastReceiver {
             case Constants.ACTION.POWER_OFF:
                 CmdRadio.powerOn(0);
                 break;
+            case Constants.ACTION.RDS_ON:
+                CmdRadio.rdsEnable(1);
+                CmdRadio.rdsAfEnable(2);
+                CmdRadio.rdsPtyEnable(2);
+                CmdRadio.rdsTaEnable(2);
+                break;
+            case Constants.ACTION.RDS_OFF:
+                CmdRadio.rdsEnable(0);
+                break;
+            case Constants.ACTION.AREA:
+                CmdRadio.area(intent.getIntExtra("AREA", 0));
+                break;
+            case Constants.ACTION.AUTOSENS_ON:
+                CmdRadio.autoSensitivity(1);
+                break;
+            case Constants.ACTION.AUTOSENS_OFF:
+                CmdRadio.autoSensitivity(0);
+                break;
+            case Constants.ACTION.STEREO:
+                CmdRadio.stereo();
+                break;
+            case Constants.ACTION.LOC:
+                CmdRadio.loc();
+                break;
         }
     }
 }

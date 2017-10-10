@@ -1,5 +1,7 @@
 package tk.rabidbeaver.libraries;
 
+import android.util.Log;
+
 public class CmdRadio {
 
     public static void freqUp() {
@@ -18,7 +20,7 @@ public class CmdRadio {
         ToolkitDev.writeMcu(1, 3, 5);
     }
 
-    public void selectChannel(int value) {
+    public static void selectChannel(int value) {
         if (value >= 0 && value < 12) {
             ToolkitDev.writeMcu(1, 3, value + 128 + 101);
         } else if (value >= 65536 && value < 65554) {
@@ -26,7 +28,7 @@ public class CmdRadio {
         }
     }
 
-    public void saveChannel(int value) {
+    public static void saveChannel(int value) {
         HandlerRadio.psText(null);
         if (value >= 0 && value < 12) {
             ToolkitDev.writeMcu(1, 3, value + 64 + 19);
@@ -35,19 +37,19 @@ public class CmdRadio {
         }
     }
 
-    public void nextChannel() {
+    public static void nextChannel() {
         ToolkitDev.writeMcu(1, 3, 10);
     }
 
-    public void prevChannel() {
+    public static void prevChannel() {
         ToolkitDev.writeMcu(1, 3, 9);
     }
 
-    public void save() {
+    public static void save() {
         ToolkitDev.writeMcu(1, 3, 8);
     }
 
-    public void scan() {
+    public static void scan() {
         ToolkitDev.writeMcu(1, 3, 18);
     }
 
@@ -86,7 +88,7 @@ public class CmdRadio {
         }
     }
 
-    public void area(int value) {
+    public static void area(int value) {
         if (value >= 0 && value <= 4) {
             ToolkitDev.writeMcu(1, 3, value + 33);
         }
@@ -95,6 +97,8 @@ public class CmdRadio {
     public static void freq(int value1, int value2) {
         // value 1 should only be 0 or 3. The other two are bogus.
         // To tune to FM station, use value1=3, value3 = MHz*100, so for instance, 93.1 becomes 9310
+        Log.d("RADIO", "Frequency step count: "+HandlerRadio.sFreqStepCnt+", Frequency step length: "+HandlerRadio.sFreqStepLen);
+        Log.d("RADIO", "Min frequency: "+HandlerRadio.sFreqMin+", Max frequency: "+HandlerRadio.sFreqMax);
         switch (value1) {
             case 0:
                 if (value2 >= 0 && value2 <= HandlerRadio.sFreqStepCnt) {
@@ -119,7 +123,7 @@ public class CmdRadio {
         }
     }
 
-    public void sensity(int value1, int value2) {
+    public static void sensitivity(int value1, int value2) {
         switch (value1) {
             case 0:
                 switch (value2) {
@@ -143,7 +147,7 @@ public class CmdRadio {
         }
     }
 
-    public void autoSensity(int value) {
+    public static void autoSensitivity(int value) {
         switch (value) {
             case 0:
                 ToolkitDev.writeMcu(1, 0, 158);
@@ -153,14 +157,14 @@ public class CmdRadio {
                 return;
             case 2:
                 if (HandlerRadio.sAutoSensity == 0) {
-                    autoSensity(1);
+                    autoSensitivity(1);
                 } else {
-                    autoSensity(0);
+                    autoSensitivity(0);
                 }
         }
     }
 
-    public void rdsEnable(int value) {
+    public static void rdsEnable(int value) {
         switch (value) {
             case 0:
                 ToolkitDev.writeMcu(1, 0, 96);
@@ -177,49 +181,43 @@ public class CmdRadio {
         }
     }
 
-    public void stereo(int value) {
-        switch (value) {
-            case 2:
-                ToolkitDev.writeMcu(1, 3, 11);
-        }
+    public static void stereo() {
+        ToolkitDev.writeMcu(1, 3, 11);
     }
 
-    public void loc(int value) {
-        switch (value) {
-            case 2:
-                ToolkitDev.writeMcu(1, 3, 13);
-        }
+    public static void loc() {
+        ToolkitDev.writeMcu(1, 3, 13);
     }
 
-    public void rdsAfEnable(int value) {
+    public static void rdsAfEnable(int value) {
         switch (value) {
             case 2:
                 ToolkitDev.writeMcu(1, 3, 23);
         }
     }
 
-    public void rdsTaEnable(int value) {
+    public static void rdsTaEnable(int value) {
         switch (value) {
             case 2:
                 ToolkitDev.writeMcu(1, 3, 22);
         }
     }
 
-    public void rdsPtyEnable(int value) {
+    public static void rdsPtyEnable(int value) {
         switch (value) {
             case 2:
                 ToolkitDev.writeMcu(1, 3, 21);
         }
     }
 
-    public void search(int value) {
+    public static void search(int value) {
         switch (value) {
             case 2:
                 ToolkitDev.writeMcu(1, 3, 4);
         }
     }
 
-    public void sortType(int value) {
+    public static void sortType(int value) {
         switch (value) {
             case 0:
                 if (HandlerRadio.sSortType != 0) {
@@ -234,7 +232,7 @@ public class CmdRadio {
         }
     }
 
-    public void airLine(int value) {
+    public static void airLine(int value) {
         switch (value) {
             case 0:
                 ToolkitDev.writeMcu(1, 0, 98);
