@@ -1374,7 +1374,7 @@ public class ReceiverMcu {
                 }
             case (byte) 0:
                 Log.d("MCU", "freq");
-                /*int channel = (data[start + 1] & 255) - 1;
+                int channel = (data[start + 1] & 255) - 1;
                 if (channel < 0) {
                     return;
                 }
@@ -1386,7 +1386,7 @@ public class ReceiverMcu {
                     return;
                 } else {
                     return;
-                }*/return;
+                }
             case (byte) 1:
                 Log.d("MCU", "freq 1");
                 this.RADIO_freq = (data[start + 1] & 255) * 10000;
@@ -1397,7 +1397,7 @@ public class ReceiverMcu {
                 return;
             case (byte) 3:
                 Log.d("MCU", "freq 3");
-                /*TODO this.RADIO_freq += data[start + 1] & 255;
+                this.RADIO_freq += data[start + 1] & 255;
                 if (this.RADIO_freq > 100000) {
                     this.RADIO_freq -= 100000;
                     if (this.RADIO_channel >= 1 && this.RADIO_channel <= 18) {
@@ -1415,7 +1415,7 @@ public class ReceiverMcu {
                     }
                     //EventRadio.NE_RADIO_LIST.onNotify();
                     return;
-                }*/
+                }
                 HandlerRadio.freq(this.RADIO_freq);
                 return;
             case (byte) 5:

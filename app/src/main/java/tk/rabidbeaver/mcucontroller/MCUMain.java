@@ -12,6 +12,6 @@ public class MCUMain extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mcumain);
 
-        ToolkitDev.setupDevMcu();
+        ToolkitDev.setupDevMcu(this);
     }
 }

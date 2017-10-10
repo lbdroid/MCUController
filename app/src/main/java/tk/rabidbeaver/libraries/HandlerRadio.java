@@ -1,12 +1,15 @@
 package tk.rabidbeaver.libraries;
 
+import android.content.Intent;
 import android.util.Log;
+
+import tk.rabidbeaver.mcucontroller.Constants;
 
 public class HandlerRadio {
     public static int sBand = 65536;
     public static int sFreqMax;
     public static int sFreqMin;
-    public static int sFreqStepCnt=150;
+    public static int sFreqStepCnt = 150;
     public static int sAutoSensity;
     public static int sRdsEnable;
     public static int sSortType;
@@ -27,8 +30,23 @@ public class HandlerRadio {
         return SystemProperties.getInt("sys.fyt.radio_type", 1);
     }*/
 
+    private static void broadcast(String eName, int eInt) {
+        Intent i = new Intent();
+        i.setAction(Constants.ACTION.BROADCAST);
+        i.putExtra(eName, eInt);
+        ToolkitDev.context.sendBroadcast(i);
+    }
+
+    private static void broadcast(String eName, String eStr) {
+        Intent i = new Intent();
+        i.setAction(Constants.ACTION.BROADCAST);
+        i.putExtra(eName, eStr);
+        ToolkitDev.context.sendBroadcast(i);
+    }
+
     public static void band(int value) {
         Log.d("RADIO", "band: "+value);
+        broadcast("BAND", value);
         if (sBand != value) {
             sBand = value;
             /*ModuleCallbackList.update(DataRadio.MCLS, 0, value);
@@ -40,6 +58,7 @@ public class HandlerRadio {
     }
 
     public static void channel(int value) {
+        broadcast("CHANNEL", value);
         /*if (DataRadio.sChannel != value) {
             DataRadio.sChannel = value;
             ModuleCallbackList.update(DataRadio.MCLS, 3, value);
@@ -47,6 +66,7 @@ public class HandlerRadio {
     }
 
     public static void area(int value) {
+        broadcast("AREA", value);
         Log.d("RADIO", "area: "+value);
         /*if (DataRadio.sArea != value) {
             DataRadio.sArea = value;
@@ -58,6 +78,7 @@ public class HandlerRadio {
     }
 
     public static void freq(int value) {
+        broadcast("FREQ", value);
         Log.d("RADIO", "freq: "+value);
         /*if (DataRadio.sFreq != value) {
             psText(null);
@@ -68,6 +89,7 @@ public class HandlerRadio {
     }
 
     public static void ptyId(int value) {
+        broadcast("PTYID", value);
         Log.d("RADIO", "ptyId: "+value);
         /*if (DataRadio.sPtyId != value) {
             DataRadio.sPtyId = value;
@@ -139,6 +161,7 @@ public class HandlerRadio {
     }
 
     public static void rdsText(String value) {
+        broadcast("RDSTEXT", value);
         Log.d("RADIO", "rdsText: "+value);
         /*if (!ToolkitMisc.strEqual(DataRadio.sRdsText, value)) {
             DataRadio.sRdsText = value;
@@ -147,6 +170,7 @@ public class HandlerRadio {
     }
 
     public static void psText(String value) {
+        broadcast("PSTEXT", value);
         Log.d("RADIO", "psText: "+value);
         /*if (!ToolkitMisc.strEqual(DataRadio.sPsText, value)) {
             DataRadio.sPsText = value;
@@ -195,6 +219,7 @@ public class HandlerRadio {
     }
 
     public static void loc(int value) {
+        broadcast("LOC", value);
         Log.d("RADIO", "loc: "+value);
         /*if (DataRadio.sLoc != value) {
             DataRadio.sLoc = value;
@@ -203,6 +228,7 @@ public class HandlerRadio {
     }
 
     public static void stereo(int value) {
+        broadcast("STEREO", value);
         Log.d("RADIO", "stereo: "+value);
         /*if (DataRadio.sStereo != value) {
             DataRadio.sStereo = value;

@@ -39,6 +39,7 @@
                 <action android:name="tk.rabidbeaver.radiocontroller.AUTOSENS_OFF"/>
                 <action android:name="tk.rabidbeaver.radiocontroller.STEREO"/>
                 <action android:name="tk.rabidbeaver.radiocontroller.LOC"/>
+                <action android:name="tk.rabidbeaver.radiocontroller.CHANNEL" />
             </intent-filter>
         </receiver>
         <service android:name=".MCUService" />

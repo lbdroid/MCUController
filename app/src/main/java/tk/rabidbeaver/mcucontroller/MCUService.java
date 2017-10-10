@@ -11,7 +11,7 @@ public class MCUService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        ToolkitDev.setupDevMcu();
+        ToolkitDev.setupDevMcu(this);
     }
 
     @Override

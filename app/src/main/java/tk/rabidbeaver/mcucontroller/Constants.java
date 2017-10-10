@@ -1,7 +1,7 @@
 package tk.rabidbeaver.mcucontroller;
 
 public class Constants {
-    interface ACTION {
+    public interface ACTION {
         String BAND = "tk.rabidbeaver.radiocontroller.BAND";
         String TUNE = "tk.rabidbeaver.radiocontroller.TUNE";
         String TUNE_UP = "tk.rabidbeaver.radiocontroller.TUNE_UP";
@@ -17,5 +17,8 @@ public class Constants {
         String AUTOSENS_OFF = "tk.rabidbeaver.radiocontroller.AUTOSENS_OFF";
         String STEREO = "tk.rabidbeaver.radiocontroller.STEREO";
         String LOC = "tk.rabidbeaver.radiocontroller.LOC";
+        String CHANNEL = "tk.rabidbeaver.radiocontroller.CHANNEL";
+
+        String BROADCAST = "tk.rabidbeaver.radiocontroller.BROADCAST";
     }
 }

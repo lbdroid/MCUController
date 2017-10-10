@@ -1,5 +1,6 @@
 package tk.rabidbeaver.libraries;
 
+import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ public class ToolkitDev {
     public static final SerialThread SERIAL_THREAD_MCU = new SerialThread();
     public static ReceiverMcu RECEIVER_MCU;
     public static boolean sMcuActived = true;
+    public static Context context = null;
 
     private static final Handler mHandler = new Handler();
 
@@ -64,7 +66,8 @@ public class ToolkitDev {
         }
     };
 
-    public static void setupDevMcu() {
+    public static void setupDevMcu(Context c) {
+        context = c;
 
         String path = "/dev/ttyS0";
         int baud = 38400;

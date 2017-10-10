@@ -60,6 +60,8 @@ public class RadioReceiver extends BroadcastReceiver {
             case Constants.ACTION.LOC:
                 CmdRadio.loc();
                 break;
+            case Constants.ACTION.CHANNEL:
+                CmdRadio.selectChannel(intent.getIntExtra("CHANNEL", 0));
         }
     }
 }
