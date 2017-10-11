@@ -1,18 +1,10 @@
 package tk.rabidbeaver.libraries;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Paint.Align;
 import android.os.SystemClock;
-import android.provider.Settings.System;
-import android.text.TextUtils;
 import android.util.Log;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+
+import java.io.FileWriter;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 public class HandlerMain {
     private static final String LANG_EN = "US";
@@ -34,6 +26,10 @@ public class HandlerMain {
     public static int sRequestMcuDataFlag;
     static int sUpdateAppIdTick = 0;
     private static int sleep_wakeup_timeout = 60;
+
+    public static final String USB_MODE_DEVICE = "none";
+    public static final String USB_MODE_HOST = "host";
+    public static final String USB_MODE_PATH = "/sys/kernel/debug/intel_otg/mode";
 
     class C07481 implements Runnable {
         C07481() {
@@ -381,7 +377,7 @@ public class HandlerMain {
                 handler = DataMain.sEHBrightLevel;
                 if (handler == null || !handler.onHandle(value, null, null, null, null)) {
                     int[] brightLevelTable;
-                    if (DataMain.sLamplet == 0) {
+                    if (DataMain.sHeadlights == 0) {
                         brightLevelTable = DataMain.sBrightLevelDayTable;
                     } else {
                         brightLevelTable = DataMain.sBrightLevelNightTable;
@@ -417,7 +413,7 @@ public class HandlerMain {
     }
 
     public static void brightLevelValueCmd(int value) {
-        if (DataMain.sLamplet == 0) {
+        if (DataMain.sHeadlights == 0) {
             brightLevelDayCmd(value);
         } else {
             brightLevelNightCmd(value);
@@ -1191,6 +1187,7 @@ public class HandlerMain {
     }
 
     public static void mcuOn(int value) {
+        if (value == 1) setUsbMode(1);
         if (DataMain.sMcuOnForUi != value) {
             DataMain.sMcuOnForUi = value;
             //ModuleCallbackList.update(DataMain.MCLS, 1, value);
@@ -1235,9 +1232,24 @@ public class HandlerMain {
         }
     }
 
-    public static void lamplet(int value) {
-        if (DataMain.sLamplet != value) {
-            DataMain.sLamplet = value;
+    public static void setUsbMode(int mode) {
+        try {
+            FileWriter modeWriter = new FileWriter(USB_MODE_PATH, false);
+            if (mode == 0) {
+                modeWriter.write(USB_MODE_HOST);
+            } else if (mode == 1) {
+                modeWriter.write(USB_MODE_DEVICE);
+            }
+            modeWriter.flush();
+            modeWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void headlights(int value) {
+        if (DataMain.sHeadlights != value) {
+            DataMain.sHeadlights = value;
             /*ModuleCallbackList.update(DataMain.MCLS, 4, value);
             ToolkitBacklight.fixBrightness();
             EventMain.NE_LAMPLET_ON.onNotify();
@@ -1335,9 +1347,9 @@ public class HandlerMain {
         }
     }
 
-    public static void carBackcar(int value) {
-        if (DataMain.sCarBackcar != value) {
-            DataMain.sCarBackcar = value;
+    public static void reverse(int value) {
+        if (DataMain.sReverse != value) {
+            DataMain.sReverse = value;
             //HandlerSound.fixVol();
             //EventMain.NE_CAR_BACKCAR.onNotify();
         }

@@ -96,7 +96,7 @@ public class DataMain {
     public static int sBrightNightMin = 155;
     public static int sBspAirKey;
     public static boolean sCanbusFrame2Ui = false;
-    public static int sCarBackcar;
+    public static int sReverse;
     //public static ICmdMain sCmd = new Stub();
     public static int sCncAux1;
     public static int sCncAux2;
@@ -132,7 +132,7 @@ public class DataMain {
     public static boolean sJumpAppByPowerOn = true;
     public static boolean sJumpBtByStartActivity = false;
     public static int sLampOnAlawys;
-    public static int sLamplet;
+    public static int sHeadlights;
     public static int sLampletByTime;
     public static int sLampletCleanOn;
     public static int sLampletColorCtrl;

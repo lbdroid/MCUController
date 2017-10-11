@@ -1,5 +1,7 @@
 package tk.rabidbeaver.libraries;
 
+import android.content.Context;
+import android.net.wifi.WifiManager;
 import android.os.SystemClock;
 import android.util.Log;
 
@@ -795,90 +797,64 @@ public class ReceiverMcu {
         int i = 1;
         switch (data[start]) {
             case (byte) -120:
+                Log.d("ONHANDLEMAIN", "-120");
                 mSleepTick = 0;
                 HandlerMain.mcuOn(0);
                 return;
             case (byte) -119:
-                /* TODO switch (data[start + 1]) {
+                Log.d("ONHANDLEMAIN", "-119:"+Integer.toHexString(data[start+1]));
+                switch (data[start + 1]) {
                     case (byte) 83:
-                        SystemProperties.set("sys.fyt.sleeping", "1");
-                        Log.d("sleep", "0x89 0x53 STEP1 + time: = " + SystemClock.uptimeMillis() + " isWifiClosed = " + ToolkitApp.isWifiClosed() + " mSleepTick = " + mSleepTick);
-                        if (SystemProperties.getInt("sys.sleeptimes", 0) > DataMain.rebootTimes) {
-                            SystemProperties.set("sys.fyt.sleeping", "0");
-                            ToolkitApp.reboot();
-                            return;
-                        } else if (DataChip.getChipId() != 4 || ToolkitPlatform.canSleep()) {
-                            int i2 = mSleepTick;
-                            mSleepTick = i2 + 1;
-                            if (i2 == 2) {
-                                HandlerMain.armSleepWakeup(0);
-                                if (DataChip.getChipId() == 4 && DataMain.sSleepWakeup == 0) {
-                                    ChipSofia.setMode(1);
-                                }
+                        Log.d("sleep", "0x89 0x53 STEP1 + time: = " + SystemClock.uptimeMillis());
+                        int i2 = mSleepTick;
+                        mSleepTick = i2 + 1;
+                        if (i2 == 2) {
+                            if (DataMain.sSleepWakeup == 0) {
+                                HandlerMain.setUsbMode(1);
                             }
-                            if (DataMain.sOnResetState == 0 || DataMain.sMcuPowerOption != 0) {
-                                if (!ToolkitApp.isWifiClosed()) {
-                                    if (!"open".equals(SystemProperties.get("persist.sys.wifi.states"))) {
-                                        SystemProperties.set("persist.sys.wifi.states", "open");
-                                    }
-                                    ToolkitApp.closeWifiWhenSleep();
-                                } else if (mSleepTick > 4) {
-                                    ToolkitDev.writeMcu(1, 170, 95);
-                                    Log.d("sleep", "0x89 0x53 REVEIVER MCU " + SystemClock.uptimeMillis());
-                                }
-                                ObjApp.getMsgView().msg("sleep 0x89 0x53");
-                                Log.d("sleep", "0x89 0x53 STEP2 + time: = " + SystemClock.uptimeMillis());
-                                return;
-                            }
-                            if (!(ToolkitApp.isWifiClosed() || "open".equals(SystemProperties.get("persist.sys.wifi.states")))) {
-                                SystemProperties.set("persist.sys.wifi.states", "open");
-                            }
-                            if (mSleepTick > 4) {
+                        }
+                        WifiManager wifi = (WifiManager)ToolkitDev.context.getSystemService(Context.WIFI_SERVICE);
+                        if (DataMain.sOnResetState == 0 || DataMain.sMcuPowerOption != 0) {
+                            if (wifi.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
+                                wifi.setWifiEnabled(false);
+                            } else if (mSleepTick > 4) {
                                 ToolkitDev.writeMcu(1, 170, 95);
                                 Log.d("sleep", "0x89 0x53 REVEIVER MCU " + SystemClock.uptimeMillis());
-                                return;
                             }
-                            return;
-                        } else {
-                            SystemProperties.set("sys.fyt.sleeping", "0");
+                            Log.d("sleep", "0x89 0x53 STEP2 + time: = " + SystemClock.uptimeMillis());
                             return;
                         }
+                        if (mSleepTick > 4) {
+                            ToolkitDev.writeMcu(1, 170, 95);
+                            Log.d("sleep", "0x89 0x53 REVEIVER MCU " + SystemClock.uptimeMillis());
+                            return;
+                        }
+                        return;
+
                     case (byte) 84:
                         mSleepTick = 0;
                         ToolkitDev.writeMcu(1, 170, 97);
-                        ObjApp.getMsgView().msg("sleep 0x89 0x54");
                         Log.d("sleep", "0x89 0x54 STEP3 + time: = " + SystemClock.uptimeMillis());
                         return;
                     case (byte) 85:
-                        ObjApp.getMsgView().msg("0x89 0x55");
-                        Log.d("sleep", "0x89 0x55 canSleep = " + ToolkitPlatform.canSleep());
-                        if (ToolkitPlatform.canSleep()) {
-                            if (DataChip.getChipId() == 4) {
-                                if (this.mLock8955.unlock(1000)) {
-                                    ToolkitApp.threadSleep(2000);
-                                    ToolkitDev.writeMcu(1, 170, 98);
-                                    ToolkitApp.threadSleep(500);
-                                    this.mLock8955.reset();
-                                } else {
-                                    return;
-                                }
-                            } else if (DataChip.getChipId() != 2) {
-                                ToolkitDev.writeMcu(1, 170, 98);
-                                ToolkitApp.threadSleep(500);
-                            }
-                            SystemProperties.set("sys.sleeptimes", (SystemProperties.getInt("sys.sleeptimes", 0) + 1));
-                            ToolkitPlatform.muteAmp(0);
-                            ToolkitApp.killAppWhenSleep();
-                            ToolkitApp.go2Sleep();
-                            DataMain.sMcuActived = false;
-                            ObjApp.getMsgView().msg("0x89 0x55 gotoSleep");
-                            Log.d("sleep", "0x89 0x55 gotoSleep");
-                        }
-                        SystemProperties.set("sys.fyt.sleeping", "0");
+                        Log.d("sleep", "0x89 0x55 canSleep = duh!");
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException ie){}
+                        ToolkitDev.writeMcu(1, 170, 98);
+                        //SystemProperties.set("sys.sleeptimes", (SystemProperties.getInt("sys.sleeptimes", 0) + 1));
+                        //ToolkitPlatform.muteAmp(0);
+                        //ToolkitApp.killAppWhenSleep();
+                        //TODO? ToolkitApp.go2Sleep(); -- not an option except by reflection.
+                        //TODO This uses PowerManager.goToSleep(SystemClock.uptimeMillis())
+                        DataMain.sMcuActived = false;
+                        Log.d("sleep", "0x89 0x55 gotoSleep");
+
+                        //SystemProperties.set("sys.fyt.sleeping", "0");
                         return;
                     default:
                         return;
-                }*/return;
+                }
             case (byte) -112:
                 return;
             case (byte) -110:
@@ -891,6 +867,7 @@ public class ReceiverMcu {
                 }*/
                 return;
             case (byte) -106:
+                Log.d("ONHANDLEMAIN", "-106");
                 HandlerMain.lampletByTime(data[start + 1] & 1);
                 return;
             case (byte) -102:
@@ -929,15 +906,19 @@ public class ReceiverMcu {
             case (byte) 0:
                 switch (data[start + 1]) {
                     case (byte) 0:
+                        Log.d("ONHANDLEMAIN", "mcuOn 0");
                         HandlerMain.mcuOn(0);
                         return;
                     case (byte) 1:
+                        Log.d("ONHANDLEMAIN", "mcuOn 1");
                         HandlerMain.mcuOn(1);
                         return;
                     case (byte) 2:
+                        Log.d("ONHANDLEMAIN", "blackScreen 1");
                         HandlerMain.blackScreen(1);
                         return;
                     case (byte) 3:
+                        Log.d("ONHANDLEMAIN", "blackScreen 0");
                         HandlerMain.blackScreen(0);
                         return;
                     case (byte) 4:
@@ -953,6 +934,7 @@ public class ReceiverMcu {
                         }*/
                         return;
                     case (byte) 16:
+                        Log.d("ONHANDLEMAIN", "standby");
                         if (DataMain.sStandbyType == 0) {
                             HandlerMain.standby(1);
                             return;
@@ -961,14 +943,17 @@ public class ReceiverMcu {
                     case (byte) 17:
                         return;
                     case (byte) 18:
-                        HandlerMain.lamplet(0); // headlights off?
+                        Log.d("ONHANDLEMAIN", "headlights 0");
+                        HandlerMain.headlights(0); // headlights off?
                         return;
                     case (byte) 19:
-                        HandlerMain.lamplet(1); // headlights on?
+                        Log.d("ONHANDLEMAIN", "headlights 1");
+                        HandlerMain.headlights(1); // headlights on?
                         return;
                     case (byte) 32:
                         return;
                     case (byte) 33:
+                        Log.d("ONHANDLEMAIN", "33");
                         // This unlock thing seems to just make sure that the writes don't happen
                         // more than once in 2 seconds.
                         if (this.mLockUiOk.unlock(2000)) {
@@ -980,9 +965,11 @@ public class ReceiverMcu {
                     case (byte) 34:
                         return;
                     case (byte) 49:
+                        Log.d("ONHANDLEMAIN", "accOn 1");
                         HandlerMain.accOn(1);
                         return;
                     case (byte) 50:
+                        Log.d("ONHANDLEMAIN", "accOn 0");
                         HandlerMain.accOn(0);
                         return;
                     case (byte) 112:
@@ -1064,9 +1051,13 @@ public class ReceiverMcu {
             case (byte) 6:
                 switch (data[start + 1] & 255) {
                     case 0:
+                        //TODO BRAKE OFF HERE
+                        Log.d("ONHANDLEMAIN", "handbrake 0");
                         HandlerMain.handbrake(0);
                         return;
                     case 1:
+                        //TODO BRAKE ON HERE
+                        Log.d("ONHANDLEMAIN", "handbrake 1");
                         HandlerMain.handbrake(1);
                         return;
                     case 2:
@@ -1166,12 +1157,17 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) 18:
-                HandlerMain.lamplet(0);
+                //TODO HEADLIGHTS OFF HERE
+                Log.d("ONHANDLEMAIN", "headlights 0 B");
+                HandlerMain.headlights(0);
                 return;
             case (byte) 19:
-                HandlerMain.lamplet(1);
+                //TODO HEADLIGHTS ON HERE
+                Log.d("ONHANDLEMAIN", "headlights 1 B");
+                HandlerMain.headlights(1);
                 return;
             case (byte) 20:
+                Log.d("ONHANDLEMAIN", "brightlevelCmd -1");
                 HandlerMain.brightLevelCmd(-3);
                 return;
             case (byte) 22:
@@ -1241,15 +1237,20 @@ public class ReceiverMcu {
             case (byte) 35:
                 switch (data[start + 1]) {
                     case (byte) 2:
-                        HandlerMain.carBackcar(0); // reverse off?
+                        //TODO REVERSE LIGHTS OFF HERE
+                        Log.d("ONHANDLEMAIN", "reverse 0");
+                        HandlerMain.reverse(0); // reverse off?
                         return;
                     case (byte) 3:
-                        HandlerMain.carBackcar(1); // reverse on?
+                        //TODO REVERSE LIGHTS ON HERE
+                        Log.d("ONHANDLEMAIN", "reverse 1");
+                        HandlerMain.reverse(1); // reverse on?
                         return;
                     default:
                         return;
                 }
             case (byte) 36:
+                Log.d("ONHANDLEMAIN", "handbrakeEnable: "+Integer.toHexString(data[start+1]));
                 if (DataMain.sHandbrakeEnableType == 0) {
                     HandlerMain.handbrakeEnable(data[start + 1] & 1);
                     return;
