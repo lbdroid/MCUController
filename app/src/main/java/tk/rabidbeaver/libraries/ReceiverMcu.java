@@ -346,7 +346,7 @@ public class ReceiverMcu {
                         onHandleRadio(data, start + 2, length - 2);
                         return;
                     case (byte) 7:
-                        //onHandleBt(data, start + 2, length - 2);
+                        HandlerSteer.keyAct(0xc);
                         return;
                     case (byte) 8:
                         //onHandleIpod(data, start + 2, length - 2);
@@ -725,6 +725,7 @@ public class ReceiverMcu {
                 HandlerCanbus.mcuCanbusSupportCnt(cnt);*/
                 return;
             case (byte) 99:
+                Log.d("STEER", "RADAR 99");
                 //onHandleRadar(data, start + 1, length - 1);
                 return;
             case (byte) 100:
@@ -789,6 +790,7 @@ public class ReceiverMcu {
         Log.d("MCUSERIAL", "COMMAND NOT HANDLED: "+inCommand);
     }
 
+    // 0x0100xxxxxx input
     private void onHandleMain(byte[] data, int start, int length) {
         int i = 1;
         switch (data[start]) {
@@ -1083,7 +1085,7 @@ public class ReceiverMcu {
                         return;
                 }
             case (byte) 7:
-                HandlerMain.mcuKeyNavi();
+                HandlerSteer.keyAct(0x12);
                 return;
             case (byte) 8:
                 HandlerMain.mcuKeyBtPhone();
@@ -1112,6 +1114,8 @@ public class ReceiverMcu {
                 }
             case (byte) 16:
                 switch (data[start + 1]) {
+                    case (byte) 7:
+                        HandlerSteer.keyAct(0xd);
                     case (byte) 11:
                         HandlerMain.mcuKeyPlayer();
                         return;
@@ -1133,7 +1137,7 @@ public class ReceiverMcu {
                         HandlerMain.mcuKeyBand();
                         return;
                     case (byte) 32:
-                        HandlerMain.mcuKeyMode();
+                        HandlerSteer.keyAct(0xe);
                         return;
                     default:
                         return;
@@ -1197,13 +1201,13 @@ public class ReceiverMcu {
                         HandlerMain.mcuKeyDown();
                         return;
                     case (byte) 7:
-                        HandlerMain.mcuKeyVolUp();
+                        HandlerSteer.keyAct(0xf);
                         return;
                     case (byte) 8:
-                        HandlerMain.mcuKeyVolDown();
+                        HandlerSteer.keyAct(0x10);
                         return;
                     case (byte) 9:
-                        HandlerMain.mcuKeyVolMute();
+                        HandlerSteer.keyAct(0x11);
                         return;
                     case (byte) 18:
                         return;
@@ -1584,19 +1588,7 @@ public class ReceiverMcu {
                 HandlerSteer.keyAdc((data[start] - 97) + 16, data[start + 1] & 255);
                 return;
             case (byte) 112:
-                /* TODO seems to be some kind of custom action implementation
-                int key = data[start + 1] - 1;
-                if (key >= 0 && key <= 11) {
-                    Runnable keyAction = DataSteer.ON_KEY_RESERVE[key];
-                    if (keyAction != null) {
-                        keyAction.run();
-                        return;
-                    }
-                    return;
-                }*/
-                return;
-            default:
-                return;
+                HandlerSteer.keyAct(data[start + 1]);
         }
     }
 

@@ -32,14 +32,14 @@ public class HandlerRadio {
 
     private static void broadcast(String eName, int eInt) {
         Intent i = new Intent();
-        i.setAction(Constants.ACTION.BROADCAST);
+        i.setAction(Constants.RADIO.BROADCAST);
         i.putExtra(eName, eInt);
         ToolkitDev.context.sendBroadcast(i);
     }
 
     private static void broadcast(String eName, String eStr) {
         Intent i = new Intent();
-        i.setAction(Constants.ACTION.BROADCAST);
+        i.setAction(Constants.RADIO.BROADCAST);
         i.putExtra(eName, eStr);
         ToolkitDev.context.sendBroadcast(i);
     }

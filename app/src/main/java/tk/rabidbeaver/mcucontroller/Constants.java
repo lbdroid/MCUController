@@ -1,7 +1,7 @@
 package tk.rabidbeaver.mcucontroller;
 
 public class Constants {
-    public interface ACTION {
+    public interface RADIO {
         String BAND = "tk.rabidbeaver.radiocontroller.BAND";
         String TUNE = "tk.rabidbeaver.radiocontroller.TUNE";
         String TUNE_UP = "tk.rabidbeaver.radiocontroller.TUNE_UP";
@@ -20,5 +20,20 @@ public class Constants {
         String CHANNEL = "tk.rabidbeaver.radiocontroller.CHANNEL";
 
         String BROADCAST = "tk.rabidbeaver.radiocontroller.BROADCAST";
+    }
+
+    public interface SWI {
+        String DETECT = "tk.rabidbeaver.swicontroller.DETECT";
+        String CLEAR = "tk.rabidbeaver.swicontroller.CLEAR";
+        String SAVE = "tk.rabidbeaver.swicontroller.SAVE";
+        String ADCKEY = "tk.rabidbeaver.swicontroller.ADCKEY";
+        String MCUKEYCONTROL = "tk.rabidbeaver.swicontroller.KEYCONTROL";
+        String MCUKEY = "tk.rabidbeaver.swicontroller.MCUKEY";
+
+        String BROADCAST = "tk.rabidbeaver.mcureceiver.MCU_KEY";
+    }
+
+    public interface MAIN {
+
     }
 }
