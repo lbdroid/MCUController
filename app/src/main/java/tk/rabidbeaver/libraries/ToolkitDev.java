@@ -11,6 +11,7 @@ public class ToolkitDev {
     public static ReceiverMcu RECEIVER_MCU;
     public static boolean sMcuActived = true;
     public static Context context = null;
+    private static boolean beatingHeart = false;
 
     private static final Handler mHandler = new Handler();
 
@@ -62,9 +63,20 @@ public class ToolkitDev {
         @Override
         public void run() {
             ToolkitDev.writeMcu(1, 170, 85);
-            mHandler.postDelayed(this, 1000);
+            if (beatingHeart) mHandler.postDelayed(this, 1000);
         }
     };
+
+    public static void startHeartBeat(){
+        if (!beatingHeart) {
+            beatingHeart = true;
+            mcuHeartbeat.run();
+        }
+    }
+
+    public static void stopHeartBeat(){
+        beatingHeart = false;
+    }
 
     public static void setupDevMcu(Context c) {
         context = c;
@@ -82,6 +94,7 @@ public class ToolkitDev {
 
         // begin heartbeat
         // TODO: This will have to be *stopped* when go to sleep.
-        mcuHeartbeat.run();
+        //mcuHeartbeat.run();
+        startHeartBeat();
     }
 }

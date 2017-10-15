@@ -1,10 +1,13 @@
 package tk.rabidbeaver.libraries;
 
+import android.content.Intent;
 import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.FileWriter;
 import java.io.IOException;
+
+import tk.rabidbeaver.mcucontroller.Constants;
 
 public class HandlerMain {
     private static final String LANG_EN = "US";
@@ -25,55 +28,11 @@ public class HandlerMain {
     public static boolean sMcuPlatfCheckEnable = true;
     public static int sRequestMcuDataFlag;
     static int sUpdateAppIdTick = 0;
-    private static int sleep_wakeup_timeout = 60;
+    private static boolean isAccOn = false;
 
     public static final String USB_MODE_DEVICE = "none";
     public static final String USB_MODE_HOST = "host";
     public static final String USB_MODE_PATH = "/sys/kernel/debug/intel_otg/mode";
-
-    class C07481 implements Runnable {
-        C07481() {
-        }
-
-        public void run() {
-            ToolkitDev.writeMcuNon(1, 0, 189);
-            Log.d("sleep", "enterSleepWakeup work + time: = " + SystemClock.uptimeMillis());
-            HandlerMain.sleep_wakeup_timeout = HandlerMain.sleep_wakeup_timeout - 1;
-            if (HandlerMain.sleep_wakeup_timeout == 0) {
-                HandlerMain.enterSleepWakeup(0);
-            }
-        }
-    }
-
-    class C07492 implements Runnable {
-        C07492() {
-        }
-
-        public synchronized void run() {
-            if (DataMain.sMuteTickByChangeAppId > 0) {
-                DataMain.sMuteTickByChangeAppId--;
-                if (DataMain.sMuteTickByChangeAppId == 0) {
-                    //HandlerMain.calcMuteMain();
-                }
-            }
-            if (DataMain.sVaAudioOccupiedTick > 0) {
-                DataMain.sVaAudioOccupiedTick--;
-                if (DataMain.sVaAudioOccupiedTick == 2) {
-                    //ModuleCallbackList.update(DataMain.MCLS, 57, 0);
-                } else if (DataMain.sVaAudioOccupiedTick == 0) {
-                    //HandlerMain.vaAudioOccupied(0);
-                }
-            }
-            if (HandlerMain.sUpdateAppIdTick > 0) {
-                HandlerMain.sUpdateAppIdTick--;
-                if (HandlerMain.sUpdateAppIdTick <= 0) {
-                    //ModuleCallbackList.update(DataMain.MCLS, 0, DataMain.sAppId);
-                }
-            }
-        }
-    }
-
-
 
     class C07514 implements Runnable {
         C07514() {
@@ -596,17 +555,6 @@ public class HandlerMain {
             case 1:
                 ToolkitDev.writeMcu(117, 1);
         }
-    }
-
-    public static void enterSleepWakeup(int on) {
-        if (DataMain.sAccOn != 0 || on == 0) {
-            //ToolkitPlatform.lockSystem(0);
-            ToolkitDev.writeMcuNon(1, 0, 190);
-            Log.d("sleep", "enterSleepWakeup over + time: = " + SystemClock.uptimeMillis());
-            return;
-        }
-        sleep_wakeup_timeout = 60;
-        //ToolkitPlatform.lockSystem(1);
     }
 
     public static void keyCmd(int value) {
@@ -1187,7 +1135,14 @@ public class HandlerMain {
     }
 
     public static void mcuOn(int value) {
-        if (value == 1) setUsbMode(1);
+        if (value == 1){
+            setUsbMode(1);
+            //ToolkitDev.startHeartBeat();
+        } else {
+            setUsbMode(0);
+            //ToolkitDev.stopHeartBeat();
+        }
+
         if (DataMain.sMcuOnForUi != value) {
             DataMain.sMcuOnForUi = value;
             //ModuleCallbackList.update(DataMain.MCLS, 1, value);
@@ -1236,9 +1191,9 @@ public class HandlerMain {
         try {
             FileWriter modeWriter = new FileWriter(USB_MODE_PATH, false);
             if (mode == 0) {
-                modeWriter.write(USB_MODE_HOST);
-            } else if (mode == 1) {
                 modeWriter.write(USB_MODE_DEVICE);
+            } else if (mode == 1) {
+                modeWriter.write(USB_MODE_HOST);
             }
             modeWriter.flush();
             modeWriter.close();
@@ -1525,6 +1480,17 @@ public class HandlerMain {
     }
 
     public static void accOn(int value) {
+        Intent i = new Intent();
+        if (!isAccOn && value == 1){
+            isAccOn = true;
+            i.setAction(Constants.MAIN.ACC_ON);
+            ToolkitDev.context.sendBroadcast(i);
+        } else if (isAccOn && value == 0){
+            isAccOn = false;
+            i.setAction(Constants.MAIN.ACC_OFF);
+            ToolkitDev.context.sendBroadcast(i);
+        }
+
         if (DataMain.sAccOnForUi != value) {
             DataMain.sAccOnForUi = value;
             //ModuleCallbackList.update(DataMain.MCLS, 50, value);
@@ -1695,10 +1661,6 @@ public class HandlerMain {
         }
     }
 
-    public static synchronized void mcuKeyMode() {
-        // TODO broadcast
-    }
-
     public static void mcuKeyUp() {
         // TODO broadcast
     }
@@ -1727,10 +1689,6 @@ public class HandlerMain {
         // TODO broadcast
     }
 
-    public static void mcuKeyNavi() {
-        // TODO broadcast
-    }
-
     public static void mcuKeyBtPhone() {
         // TODO broadcast
     }
@@ -1743,23 +1701,7 @@ public class HandlerMain {
         // TODO broadcast
     }
 
-    public static void mcuKeyVolUp() {
-        // TODO broadcast
-    }
-
-    public static void mcuKeyVolDown() {
-        // TODO broadcast
-    }
-
-    public static void mcuKeyVolMute() {
-        // TODO broadcast
-    }
-
     public static void mcuKeyHome() {
-        // TODO broadcast
-    }
-
-    public static void mcuKeyMenu() {
         // TODO broadcast
     }
 
@@ -1796,70 +1738,6 @@ public class HandlerMain {
     }
 
     public static void mcuKeyRight0x32() {
-        // TODO broadcast
-    }
-
-    public static void keyN0() {
-        // TODO broadcast
-    }
-
-    public static void keyN1() {
-        // TODO broadcast
-    }
-
-    public static void keyN2() {
-        // TODO broadcast
-    }
-
-    public static void keyN3() {
-        // TODO broadcast
-    }
-
-    public static void keyN4() {
-        // TODO broadcast
-    }
-
-    public static void keyN5() {
-        // TODO broadcast
-    }
-
-    public static void keyN6() {
-        // TODO broadcast
-    }
-
-    public static void keyN7() {
-        // TODO broadcast
-    }
-
-    public static void keyN8() {
-        // TODO broadcast
-    }
-
-    public static void keyN9() {
-        // TODO broadcast
-    }
-
-    public static void keyNP() {
-        // TODO broadcast
-    }
-
-    public static void keyNX() {
-        // TODO broadcast
-    }
-
-    public static void keyNJ() {
-        // TODO broadcast
-    }
-
-    public static void keyFB() {
-        // TODO broadcast
-    }
-
-    public static void keyFF() {
-        // TODO broadcast
-    }
-
-    public static void keySearch() {
         // TODO broadcast
     }
 
