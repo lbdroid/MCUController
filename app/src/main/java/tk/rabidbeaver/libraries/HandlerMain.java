@@ -459,9 +459,9 @@ public class HandlerMain {
         if (DataMain.sAccOn != value) {
             DataMain.sAccOn = value;
 
-            //ToolsJni.cmd_29_acc_state_to_bsp(value == 0 ? 0 : 1);
-            ToolsJni.cmd_29_acc_state_to_bsp(0);
-            mcuOnCmd(value);
+            ToolsJni.cmd_29_acc_state_to_bsp(value == 0 ? 0 : 1);
+            //ToolsJni.cmd_29_acc_state_to_bsp(0);
+            //mcuOnCmd(value);
 
             Intent i = new Intent();
 

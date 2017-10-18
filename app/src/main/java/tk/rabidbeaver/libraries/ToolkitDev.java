@@ -4,6 +4,10 @@ import android.content.Context;
 import android.os.Handler;
 import android.util.Log;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class ToolkitDev {
 
     private static final Serial SERIAL_MCU = new Serial();
@@ -13,6 +17,23 @@ public class ToolkitDev {
     private static boolean beatingHeart = false;
 
     private static final Handler mHandler = new Handler();
+    private static SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZZZZZ");
+
+    public static synchronized void writeLog(boolean write, byte[] data){
+        String timestamp = simpleDateFormat.format(Calendar.getInstance().getTime());
+
+        final StringBuilder builder = new StringBuilder();
+        for (byte b : data) {
+            builder.append(String.format("%02x", b));
+        }
+        try {
+            java.io.PrintWriter writer = new java.io.PrintWriter(new java.io.FileOutputStream("/sdcard/mcucontroller.log", true));
+            writer.println(timestamp + (write?" WRITE>>> ":" READ<<< ") + "0x" + builder.toString());
+            writer.close();
+        } catch (java.io.IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private static byte[] packFrameMcu(int... args) {
         if (args == null) {
@@ -47,6 +68,7 @@ public class ToolkitDev {
             if (data == null) {
                 return;
             }
+            writeLog(true, data);
             SERIAL_MCU.write(data);
         }
     }

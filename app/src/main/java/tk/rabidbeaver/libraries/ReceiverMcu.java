@@ -126,11 +126,14 @@ class ReceiverMcu {
         }
         String inCommand = "0x";
         String hexStr;
+        byte[] thisCmd = new byte[length];
         for (int ii = start; ii<start+length; ii++){
             hexStr = Integer.toHexString(data[ii]);
             while (hexStr.length() < 2) hexStr = "0"+hexStr;
-            inCommand += hexStr;
+            inCommand += hexStr.substring(hexStr.length() - 2);
+            thisCmd[ii-start] = data[ii];
         }
+        ToolkitDev.writeLog(false, thisCmd);
         Log.d("MCUSERIAL", "COMMAND _IN: "+inCommand);
         int i;
         int end;
@@ -362,6 +365,7 @@ class ReceiverMcu {
                 switch (data[start + 1]) {
                     case (byte) 83:
                         Log.d("sleep", "0x89 0x53 STEP1 + time: = " + SystemClock.uptimeMillis());
+                        ToolkitDev.stopHeartBeat();
                         int i2 = mSleepTick;
                         mSleepTick = i2 + 1;
                         if (i2 == 2) {
@@ -404,7 +408,6 @@ class ReceiverMcu {
                         i.setAction(Constants.MAIN.STANDBY);
                         ToolkitDev.context.sendBroadcast(i);
 
-                        ToolkitDev.stopHeartBeat();
                         DataMain.sMcuActived = false;
                         Log.d("sleep", "0x89 0x55 gotoSleep");
 
