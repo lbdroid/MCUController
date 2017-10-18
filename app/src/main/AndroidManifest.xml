@@ -56,7 +56,8 @@
         </receiver>
         <receiver android:name=".MainReceiver" >
             <intent-filter>
-                <action android:name="tk.rabidbeaver.maincontroller.LED_COLOR"/>
+                <action android:name="tk.rabidbeaver.maincontroller.MCU_SWITCH"/>
+                <action android:name="tk.rabidbeaver.maincontroller.MCU_STANDBY_SWITCH"/>
             </intent-filter>
         </receiver>
         <service android:name=".MCUService" />

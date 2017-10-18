@@ -10,10 +10,11 @@ public class MainReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         switch (intent.getAction()) {
-            case Constants.MAIN.LED_COLOR:
-                HandlerMain.ledColorCmd(intent.getIntExtra("COLOR", 0));
-            default:
+            case Constants.MAIN.MCU_SWITCH:
+                HandlerMain.mcuOnCmd(2);
                 break;
+            case Constants.MAIN.MCU_STANDBY_SWITCH:
+                HandlerMain.mcuPowerOptionCmd(2);
         }
     }
 }

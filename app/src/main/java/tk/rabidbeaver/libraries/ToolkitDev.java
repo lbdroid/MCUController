@@ -6,16 +6,15 @@ import android.util.Log;
 
 public class ToolkitDev {
 
-    public static final Serial SERIAL_MCU = new Serial();
-    public static final SerialThread SERIAL_THREAD_MCU = new SerialThread();
-    public static ReceiverMcu RECEIVER_MCU;
-    public static boolean sMcuActived = true;
+    private static final Serial SERIAL_MCU = new Serial();
+    private static final SerialThread SERIAL_THREAD_MCU = new SerialThread();
+    private static boolean sMcuActived = false;
     public static Context context = null;
     private static boolean beatingHeart = false;
 
     private static final Handler mHandler = new Handler();
 
-    public static byte[] packFrameMcu(int... args) {
+    private static byte[] packFrameMcu(int... args) {
         if (args == null) {
             return null;
         }
@@ -34,10 +33,10 @@ public class ToolkitDev {
         return data;
     }
 
-    public static void writeMcu(int... args) {
+    static void writeMcu(int... args) {
         if (sMcuActived) {
             String inCommand = "0x";
-            String hexStr = "";
+            String hexStr;
             for (int ii = 0; ii<args.length; ii++) {
                 hexStr = Integer.toHexString(args[ii]);
                 while (hexStr.length() < 2) hexStr = "0"+hexStr;
@@ -67,14 +66,14 @@ public class ToolkitDev {
         }
     };
 
-    public static void startHeartBeat(){
+    static void startHeartBeat(){
         if (!beatingHeart) {
             beatingHeart = true;
             mcuHeartbeat.run();
         }
     }
 
-    public static void stopHeartBeat(){
+    static void stopHeartBeat(){
         beatingHeart = false;
     }
 
@@ -86,15 +85,13 @@ public class ToolkitDev {
         SERIAL_MCU.open(path);
         SERIAL_MCU.setup(baud);
         SERIAL_THREAD_MCU.setName(String.format("MCU DEV PATH = %s FD = %d BAUD = %d", new Object[]{path, Integer.valueOf(SERIAL_MCU.getFd()), Integer.valueOf(baud)}));
-        RECEIVER_MCU = new ReceiverMcu();
-        SERIAL_THREAD_MCU.set(SERIAL_MCU, RECEIVER_MCU);
+        SERIAL_THREAD_MCU.set(SERIAL_MCU, new ReceiverMcu());
+
+        sMcuActived = true;
 
         // write "NULL" MCU state
         ToolkitDev.writeMcu(1, 0, 27);
 
-        // begin heartbeat
-        // TODO: This will have to be *stopped* when go to sleep.
-        //mcuHeartbeat.run();
         startHeartBeat();
     }
 }

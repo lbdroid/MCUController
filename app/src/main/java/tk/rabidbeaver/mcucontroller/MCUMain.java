@@ -8,6 +8,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.syu.jni.ToolsJni;
+
 import tk.rabidbeaver.libraries.CmdSteer;
 import tk.rabidbeaver.libraries.HandlerSteer;
 import tk.rabidbeaver.libraries.ToolkitDev;
@@ -20,6 +22,8 @@ public class MCUMain extends Activity {
     private boolean stopUpdateUi;
 
     private String adcStatus = "";
+
+    private int color = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,33 @@ public class MCUMain extends Activity {
                 swistart.setEnabled(true);
                 swicontent.setVisibility(View.GONE);
                 Toast.makeText(getApplicationContext(), "SWI programming CANCELLED.", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Button b1 = findViewById(R.id.b1);
+        Button b2 = findViewById(R.id.b2);
+        Button b3 = findViewById(R.id.b3);
+
+        b1.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                color = 0;
+                ToolsJni.cmd_16_set_led_color(0,0);
+            }
+        });
+
+        b2.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                color++;
+                ToolsJni.cmd_16_set_led_color(color,0);
+            }
+        });
+
+        b3.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                ToolsJni.cmd_16_set_led_color(color,1);
             }
         });
     }

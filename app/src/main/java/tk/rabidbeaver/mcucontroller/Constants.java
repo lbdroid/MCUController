@@ -34,8 +34,10 @@ public class Constants {
     }
 
     public interface MAIN {
-        String LED_COLOR = "tk.rabidbeaver.maincontroller.LED_COLOR";
         String ACC_ON = "tk.rabidbeaver.maincontroller.ACC_ON";
         String ACC_OFF = "tk.rabidbeaver.maincontroller.ACC_OFF";
+        String MCU_SWITCH = "tk.rabidbeaver.maincontroller.MCU_SWITCH";
+        String MCU_STANDBY_SWITCH = "tk.rabidbeaver.maincontroller.MCU_STANDBY_SWITCH";
+        String STANDBY = "tk.rabidbeaver.maincontroller.STANDBY";
     }
 }

@@ -1,6 +1,6 @@
 package tk.rabidbeaver.libraries;
 
-public class SerialThread extends Thread {
+class SerialThread extends Thread {
     private boolean mLoop = true;
     private boolean mPause;
     private ReceiverMcu mReceiver;
@@ -12,28 +12,11 @@ public class SerialThread extends Thread {
         }
     }
 
-    public synchronized void setSerial(Serial serial) {
-        this.mSerial = serial;
-        start();
-        notify();
-    }
-
-    public synchronized void setReceiver(ReceiverMcu receiver) {
-        this.mReceiver = receiver;
-        start();
-        notify();
-    }
-
-    public synchronized void set(Serial serial, ReceiverMcu receiver) {
+    synchronized void set(Serial serial, ReceiverMcu receiver) {
         this.mSerial = serial;
         this.mReceiver = receiver;
         start();
         notify();
-    }
-
-    public synchronized void reset() {
-        this.mSerial = null;
-        this.mReceiver = null;
     }
 
     public void pause(boolean pause) {

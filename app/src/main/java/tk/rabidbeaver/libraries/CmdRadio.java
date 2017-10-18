@@ -28,30 +28,30 @@ public class CmdRadio {
         }
     }
 
-    public static void saveChannel(int value) {
+    /*public static void saveChannel(int value) {
         HandlerRadio.psText(null);
         if (value >= 0 && value < 12) {
             ToolkitDev.writeMcu(1, 3, value + 64 + 19);
         } else if (value >= 65536 && value < 65554) {
             ToolkitDev.writeMcu(1, 3, ((value + 64) - 65536) + 1);
         }
-    }
+    }*/
 
-    public static void nextChannel() {
+    static void nextChannel() {
         ToolkitDev.writeMcu(1, 3, 10);
     }
 
-    public static void prevChannel() {
+    static void prevChannel() {
         ToolkitDev.writeMcu(1, 3, 9);
     }
 
-    public static void save() {
+    /*static void save() {
         ToolkitDev.writeMcu(1, 3, 8);
-    }
+    }*/
 
-    public static void scan() {
+    /*public static void scan() {
         ToolkitDev.writeMcu(1, 3, 18);
-    }
+    }*/
 
     public static void band(int value) {
         // Band -1 doesn't seem to do anything.
@@ -123,7 +123,7 @@ public class CmdRadio {
         }
     }
 
-    public static void sensitivity(int value1, int value2) {
+    /*public static void sensitivity(int value1, int value2) {
         switch (value1) {
             case 0:
                 switch (value2) {
@@ -145,7 +145,7 @@ public class CmdRadio {
                         ToolkitDev.writeMcu(1, 0, 155);
                 }
         }
-    }
+    }*/
 
     public static void autoSensitivity(int value) {
         switch (value) {
@@ -210,14 +210,14 @@ public class CmdRadio {
         }
     }
 
-    public static void search(int value) {
+    static void search(int value) {
         switch (value) {
             case 2:
                 ToolkitDev.writeMcu(1, 3, 4);
         }
     }
 
-    public static void sortType(int value) {
+    /*public static void sortType(int value) {
         switch (value) {
             case 0:
                 if (HandlerRadio.sSortType != 0) {
@@ -230,9 +230,9 @@ public class CmdRadio {
                     ToolkitDev.writeMcu(1, 3, 128);
                 }
         }
-    }
+    }*/
 
-    public static void airLine(int value) {
+    /*public static void airLine(int value) {
         switch (value) {
             case 0:
                 ToolkitDev.writeMcu(1, 0, 98);
@@ -247,7 +247,7 @@ public class CmdRadio {
                     airLine(0);
                 }
         }
-    }
+    }*/
 
     public static void powerOn(int value) {
         switch (value) {

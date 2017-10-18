@@ -40,10 +40,7 @@ public class CmdSteer {
         while (i < 6 && HandlerSteer.SCAN_ADC[i] > 240) {
             i++;
         }
-        if (i == 6) {
-            return false;
-        }
-        return true;
+        return (i != 6);
     }
 
     public static boolean keyAdc(int keyCode) {
@@ -158,11 +155,11 @@ public class CmdSteer {
         if (keycode > 0) ToolkitDev.writeMcu(194, keycode);
     }
 
-    public static void init() {
+    /*public static void init() {
         for (int i = 0; i < 35; i++) {
             HandlerSteer.MCU_KEY_FUNC[i] = 1;
         }
-    }
+    }*/
 /*
     private void loadMcuKeyData() {
         DataSteer.MCU_KEY_FUNC[25] = this.mSph.getLastPut(25, 2);
