@@ -1,5 +1,6 @@
 package tk.rabidbeaver.libraries;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
@@ -19,6 +20,10 @@ class ReceiverMcu {
     private int mFrameStartIndex = 0;
     private int mSize = 0;
     private TickLock mLockUiOk = new TickLock();
+
+    private boolean wifiOnResume = true;
+    private boolean btOnResume = true;
+    private boolean resumeWireless = false;
 
     private class TickLock {
         private long cur;
@@ -355,6 +360,8 @@ class ReceiverMcu {
 
     // 0x0100xxxxxx input
     private void onHandleMain(byte[] data, int start) {
+        WifiManager wifi;
+        BluetoothAdapter bta;
         switch (data[start]) {
             case (byte) -120: // 0x88
                 Log.d("ONHANDLEMAIN", "-120");
@@ -362,12 +369,23 @@ class ReceiverMcu {
                 System.setProperty("sys.sleep", "0");
                 mSleepTick = 0;
                 HandlerMain.mcuOn(0);
+
+                if (resumeWireless) {
+                    wifi = (WifiManager) ToolkitDev.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                    if (wifiOnResume && wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLED && wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLING)
+                        wifi.setWifiEnabled(true);
+                    bta = BluetoothAdapter.getDefaultAdapter();
+                    if (btOnResume && !bta.isEnabled()) bta.enable();
+                    resumeWireless = false;
+                }
+
                 return;
             case (byte) -119: // 0x89
                 Log.d("ONHANDLEMAIN", "-119:"+Integer.toHexString(data[start+1]));
                 System.setProperty("sys.fyt.sleeping", "1");
                 System.setProperty("sys.sleep", "1");
                 System.setProperty("sys.sleeptimes", "1");
+                resumeWireless = true;
                 switch (data[start + 1]) {
                     case (byte) 83:
                         Log.d("sleep", "0x89 0x53 STEP1 + time: = " + SystemClock.uptimeMillis());
@@ -379,17 +397,23 @@ class ReceiverMcu {
                                 HandlerMain.setUsbMode(1);
                             }
                         }
-                        WifiManager wifi = (WifiManager)ToolkitDev.context.getSystemService(Context.WIFI_SERVICE);
-                        if (DataMain.sOnResetState == 0 || DataMain.sMcuPowerOption != 0) {
+
+                        if (mSleepTick < 2) {
+                            wifi = (WifiManager) ToolkitDev.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+                            wifiOnResume = false;
                             if (wifi.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
+                                wifiOnResume = true;
                                 wifi.setWifiEnabled(false);
-                            } else if (mSleepTick > 4) {
-                                ToolkitDev.writeMcu(1, 170, 95);
-                                Log.d("sleep", "0x89 0x53 RECEIVER MCU " + SystemClock.uptimeMillis());
                             }
-                            Log.d("sleep", "0x89 0x53 STEP2 + time: = " + SystemClock.uptimeMillis());
-                            return;
+
+                            bta = BluetoothAdapter.getDefaultAdapter();
+                            btOnResume = false;
+                            if (bta.isEnabled()) {
+                                btOnResume = true;
+                                bta.disable();
+                            }
                         }
+
                         if (mSleepTick > 4) {
                             ToolkitDev.writeMcu(1, 170, 95); // 0x01aa5f
                             Log.d("sleep", "0x89 0x53 RECEIVER MCU " + SystemClock.uptimeMillis());
