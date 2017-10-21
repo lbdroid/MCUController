@@ -1,5 +1,6 @@
 package tk.rabidbeaver.libraries;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.SystemClock;
@@ -357,11 +358,16 @@ class ReceiverMcu {
         switch (data[start]) {
             case (byte) -120: // 0x88
                 Log.d("ONHANDLEMAIN", "-120");
+                System.setProperty("sys.fyt.sleeping", "0");
+                System.setProperty("sys.sleep", "0");
                 mSleepTick = 0;
                 HandlerMain.mcuOn(0);
                 return;
             case (byte) -119: // 0x89
                 Log.d("ONHANDLEMAIN", "-119:"+Integer.toHexString(data[start+1]));
+                System.setProperty("sys.fyt.sleeping", "1");
+                System.setProperty("sys.sleep", "1");
+                System.setProperty("sys.sleeptimes", "1");
                 switch (data[start + 1]) {
                     case (byte) 83:
                         Log.d("sleep", "0x89 0x53 STEP1 + time: = " + SystemClock.uptimeMillis());
@@ -373,17 +379,17 @@ class ReceiverMcu {
                                 HandlerMain.setUsbMode(1);
                             }
                         }
-                        /*WifiManager wifi = (WifiManager)ToolkitDev.context.getSystemService(Context.WIFI_SERVICE);
+                        WifiManager wifi = (WifiManager)ToolkitDev.context.getSystemService(Context.WIFI_SERVICE);
                         if (DataMain.sOnResetState == 0 || DataMain.sMcuPowerOption != 0) {
                             if (wifi.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
                                 wifi.setWifiEnabled(false);
                             } else if (mSleepTick > 4) {
                                 ToolkitDev.writeMcu(1, 170, 95);
-                                Log.d("sleep", "0x89 0x53 REVEIVER MCU " + SystemClock.uptimeMillis());
+                                Log.d("sleep", "0x89 0x53 RECEIVER MCU " + SystemClock.uptimeMillis());
                             }
                             Log.d("sleep", "0x89 0x53 STEP2 + time: = " + SystemClock.uptimeMillis());
                             return;
-                        }*/
+                        }
                         if (mSleepTick > 4) {
                             ToolkitDev.writeMcu(1, 170, 95); // 0x01aa5f
                             Log.d("sleep", "0x89 0x53 RECEIVER MCU " + SystemClock.uptimeMillis());

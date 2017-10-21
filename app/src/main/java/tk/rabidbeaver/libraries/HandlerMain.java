@@ -460,24 +460,17 @@ public class HandlerMain {
             DataMain.sAccOn = value;
 
             ToolsJni.cmd_29_acc_state_to_bsp(value == 0 ? 0 : 1);
-            //ToolsJni.cmd_29_acc_state_to_bsp(0);
-            //mcuOnCmd(value);
 
             Intent i = new Intent();
 
             if (value == 1){
                 ToolkitDev.writeMcu(1, 170, 96);
+                ToolkitDev.writeMcu(1, 0, 0);
                 ReceiverMcu.resetTick();
                 i.setAction(Constants.MAIN.ACC_ON);
             } else i.setAction(Constants.MAIN.ACC_OFF);
 
             ToolkitDev.context.sendBroadcast(i);
-
-            /*if (value == 0){
-                i = new Intent();
-                i.setAction(Constants.MAIN.STANDBY);
-                ToolkitDev.context.sendBroadcast(i);
-            }*/
         }
     }
 
