@@ -368,7 +368,7 @@ class ReceiverMcu {
                 System.setProperty("sys.fyt.sleeping", "0");
                 System.setProperty("sys.sleep", "0");
                 mSleepTick = 0;
-                HandlerMain.mcuOn(0);
+                //HandlerMain.mcuOn(1);
 
                 if (resumeWireless) {
                     wifi = (WifiManager) ToolkitDev.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
@@ -428,6 +428,7 @@ class ReceiverMcu {
                         return;
                     case (byte) 85:
                         Log.d("sleep", "0x89 0x55 canSleep = duh!");
+                        //HandlerMain.mcuOn(0);
                         try {
                             Thread.sleep(1000);
                         } catch (InterruptedException ie){}

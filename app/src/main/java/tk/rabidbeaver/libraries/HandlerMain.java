@@ -422,22 +422,13 @@ public class HandlerMain {
     }
 
     static void mcuOn(int value) {
-        if (value == 1){
-            setUsbMode(1);
-            //ToolkitDev.startHeartBeat();
-        } else {
-            setUsbMode(0);
-            //ToolkitDev.stopHeartBeat();
-        }
+        setUsbMode(value);
 
-        if (DataMain.sMcuOnForUi != value) DataMain.sMcuOnForUi = value;
         if (DataMain.sMcuOn != value) {
             DataMain.sMcuOn = value;
-            if (value != 0) requestMcuDataCmd();
+            if (value == 1) requestMcuDataCmd();
         }
-        /*if ((DataChip.getPlatformId() == 1 || DataChip.getPlatformId() == 2 || DataChip.getPlatformId() == 3 || DataChip.getPlatformId() == 4 || DataChip.getPlatformId() == 5 || DataChip.getPlatformId() == 6 || DataChip.getPlatformId() == 0) && DataMain.sMcuOn != 0) {
-            ToolkitPlatform.monitorAccOn();
-        }*/
+
     }
 
     static void setUsbMode(int mode) {

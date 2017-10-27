@@ -1,12 +1,15 @@
 package tk.rabidbeaver.libraries;
 
 import android.content.Context;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.Handler;
 import android.util.Log;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
+
+import tk.rabidbeaver.mcucontroller.R;
 
 public class ToolkitDev {
 
@@ -115,5 +118,31 @@ public class ToolkitDev {
         ToolkitDev.writeMcu(1, 0, 27);
 
         startHeartBeat();
+
+        // TODO: In the crappy oem implementation, they enable and disable this during the
+        // TODO: go-to-sleep and wake-up processes. I think they're disabling power management
+        // TODO: on the DSP in order to reduce the power on/off clicks and pops. The system
+        // TODO: property is read by the audio HAL when audio is played, which means that
+        // TODO: to power it off during go-to-sleep, it is also necessary to play a sound.
+        //
+        // TODO: also, this doesn't actually work like this. Properties set in this manner are
+        // TODO: only available to the process that calls it, so this is only an example. It has
+        // TODO: to be added to the build.prop or set as root through a terminal.
+        System.setProperty("audio.hw.allow_close", "1");
+        playSound();
+    }
+
+    // TODO: This is a stupid hack to force the audio hal to read the system property audio.hw.allow_close
+    private static void playSound() {
+        try {
+            Uri alert = Uri.parse("android.resource://" + context.getPackageName() + "/" + R.raw.powersave);
+            MediaPlayer m = new MediaPlayer();
+            m.setDataSource(context, alert);
+            m.setAudioStreamType(5);
+            m.prepare();
+            m.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
