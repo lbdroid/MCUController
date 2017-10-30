@@ -1,6 +1,5 @@
 package tk.rabidbeaver.libraries;
 
-import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
@@ -22,7 +21,6 @@ class ReceiverMcu {
     private TickLock mLockUiOk = new TickLock();
 
     private boolean wifiOnResume = true;
-    private boolean btOnResume = true;
     private boolean resumeWireless = false;
 
     private class TickLock {
@@ -361,7 +359,6 @@ class ReceiverMcu {
     // 0x0100xxxxxx input
     private void onHandleMain(byte[] data, int start) {
         WifiManager wifi;
-        BluetoothAdapter bta;
         switch (data[start]) {
             case (byte) -120: // 0x88
                 Log.d("ONHANDLEMAIN", "-120");
@@ -374,8 +371,6 @@ class ReceiverMcu {
                     wifi = (WifiManager) ToolkitDev.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     if (wifiOnResume && wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLED && wifi.getWifiState() != WifiManager.WIFI_STATE_ENABLING)
                         wifi.setWifiEnabled(true);
-                    bta = BluetoothAdapter.getDefaultAdapter();
-                    if (btOnResume && !bta.isEnabled()) bta.enable();
                     resumeWireless = false;
                 }
 
@@ -404,13 +399,6 @@ class ReceiverMcu {
                             if (wifi.getWifiState() != WifiManager.WIFI_STATE_DISABLED) {
                                 wifiOnResume = true;
                                 wifi.setWifiEnabled(false);
-                            }
-
-                            bta = BluetoothAdapter.getDefaultAdapter();
-                            btOnResume = false;
-                            if (bta.isEnabled()) {
-                                btOnResume = true;
-                                bta.disable();
                             }
                         }
 

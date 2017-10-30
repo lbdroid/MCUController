@@ -1,5 +1,6 @@
 package tk.rabidbeaver.libraries;
 
+import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 
 import com.syu.jni.ToolsJni;
@@ -11,6 +12,7 @@ import tk.rabidbeaver.mcucontroller.Constants;
 
 public class HandlerMain {
     private static int sRequestMcuDataFlag;
+    private static boolean btOnResume = true;
 
     private static final String USB_MODE_DEVICE = "none";
     private static final String USB_MODE_HOST = "host";
@@ -449,6 +451,7 @@ public class HandlerMain {
     static void accOn(int value) {
         if (DataMain.sAccOn != value) {
             DataMain.sAccOn = value;
+            BluetoothAdapter bta;
 
             ToolsJni.cmd_29_acc_state_to_bsp(value == 0 ? 0 : 1);
 
@@ -459,7 +462,19 @@ public class HandlerMain {
                 ToolkitDev.writeMcu(1, 0, 0);
                 ReceiverMcu.resetTick();
                 i.setAction(Constants.MAIN.ACC_ON);
-            } else i.setAction(Constants.MAIN.ACC_OFF);
+
+                bta = BluetoothAdapter.getDefaultAdapter();
+                if (btOnResume && !bta.isEnabled()) bta.enable();
+            } else {
+                i.setAction(Constants.MAIN.ACC_OFF);
+
+                bta = BluetoothAdapter.getDefaultAdapter();
+                btOnResume = false;
+                if (bta.isEnabled()) {
+                    btOnResume = true;
+                    bta.disable();
+                }
+            }
 
             ToolkitDev.context.sendBroadcast(i);
         }
