@@ -1,5 +1,11 @@
-# MCUController
+# MCUController ******** DEPRECATED!!!
 Control the MCU on Jerking INTEL car radios.
+
+# Switch now to MCUd:
+https://github.com/lbdroid/MCUd
+
+Note: MCUd does not yet (as of https://github.com/lbdroid/MCUd/commit/8a9025df51b4ba4803e66aac7efb2d1c9b9364bb) have AMFM radio or SWI implemented. This project is marked as deprecated because it will NOT continue to be updated AT ALL, and no pull requests will be accepted (not that there have been any).
+
 
 Brief rundown;<br>
 This application is to go in place of sofia server that ships with jerking car radios with intel (sofia) CPU.<br>
